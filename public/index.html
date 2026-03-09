@@ -184,6 +184,86 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .avatar-preview-ph{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#000;font-family:'Syne',sans-serif;border:3px solid var(--accent)}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 
+
+/* BADGES */
+.badge-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.badge-pill.locked{background:rgba(255,255,255,0.03);border-color:var(--border);color:var(--muted2);filter:grayscale(1);opacity:.5}
+.badges-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.badge-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:all .2s}
+.badge-card.earned{border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.04)}
+.badge-card.locked{opacity:.45;filter:grayscale(.8)}
+.badge-emoji{font-size:28px;line-height:1}
+.badge-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.badge-desc{font-size:10px;color:var(--muted);line-height:1.4}
+.badge-earned-at{font-size:9px;color:var(--accent);margin-top:2px}
+
+/* NOTIFICATION BELL */
+.notif-btn{position:relative;background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:15px;transition:all .2s;display:flex;align-items:center}
+.notif-btn:hover{border-color:var(--border2);color:var(--text)}
+.notif-dot{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:999px;font-size:9px;font-weight:700;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 3px;font-family:'Syne',sans-serif;border:2px solid var(--bg)}
+.notif-dot.hidden{display:none}
+
+/* NOTIFICATION PANEL */
+.notif-panel{position:fixed;top:64px;right:16px;width:340px;max-height:480px;background:var(--surface);border:1px solid var(--border);border-radius:14px;z-index:500;display:none;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5);animation:fadeUp .2s ease both;overflow:hidden}
+.notif-panel.show{display:flex}
+.notif-panel-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.notif-panel-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.notif-panel-body{overflow-y:auto;flex:1}
+.notif-item{display:flex;gap:11px;padding:13px 16px;border-bottom:1px solid var(--border);align-items:flex-start;transition:background .15s;cursor:default}
+.notif-item:last-child{border-bottom:none}
+.notif-item.unread{background:rgba(74,222,128,0.04)}
+.notif-item:hover{background:rgba(255,255,255,0.02)}
+.notif-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.notif-content{flex:1;min-width:0}
+.notif-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:3px}
+.notif-msg{font-size:11px;color:var(--muted);line-height:1.4}
+.notif-time{font-size:10px;color:var(--muted2);margin-top:4px}
+.notif-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px 5px;border-radius:4px;transition:color .15s;flex-shrink:0}
+.notif-del:hover{color:var(--red)}
+.notif-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px}
+
+/* BADGE AWARD POPUP */
+.badge-popup{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--surface);border:1px solid rgba(74,222,128,0.4);border-radius:16px;padding:20px 28px;text-align:center;box-shadow:0 0 40px rgba(74,222,128,0.2),0 20px 60px rgba(0,0,0,0.5);animation:badgeIn .5s cubic-bezier(.175,.885,.32,1.275) both;max-width:300px;width:90%}
+@keyframes badgeIn{from{opacity:0;transform:translateX(-50%) translateY(-20px) scale(.8)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+.badge-popup-emoji{font-size:48px;margin-bottom:8px;display:block}
+.badge-popup-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.badge-popup-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px}
+.badge-popup-desc{font-size:11px;color:var(--muted)}
+
+/* STUDENT PROFILE CARD */
+.profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.profile-overlay.show{display:flex}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:420px;overflow:hidden;animation:fadeUp .35s ease both;box-shadow:0 0 80px rgba(0,0,0,0.6)}
+.profile-banner{height:90px;background:linear-gradient(135deg,#0d2818,#0a1f3a,#1a0d2e);position:relative;flex-shrink:0}
+.profile-banner-pattern{position:absolute;inset:0;background-image:linear-gradient(rgba(74,222,128,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,0.05) 1px,transparent 1px);background-size:20px 20px}
+.profile-avatar-wrap{position:absolute;bottom:-36px;left:24px}
+.profile-avatar-lg{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--accent)}
+.profile-avatar-lg-ph{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#000;font-family:'Syne',sans-serif;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--accent)}
+.profile-body{padding:48px 24px 24px}
+.profile-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.profile-joined{font-size:11px;color:var(--muted);margin-bottom:20px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.pstat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.pstat-value{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);margin-bottom:2px}
+.pstat-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.profile-rank-bar{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.prank-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:10px}
+.prank-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.prank-row:last-child{margin-bottom:0}
+.prank-label{font-size:11px;color:var(--muted);min-width:90px}
+.prank-track{flex:1;height:6px;background:var(--surface);border-radius:999px;overflow:hidden}
+.prank-fill{height:100%;border-radius:999px;transition:width .8s ease}
+.prank-val{font-size:11px;font-weight:600;min-width:40px;text-align:right}
+.profile-recent{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.precent-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:10px}
+.precent-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px}
+.precent-row:last-child{border-bottom:none}
+.precent-date{color:var(--muted)}
+.precent-pages{color:var(--accent);font-weight:600}
+.precent-note{color:var(--muted2);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.profile-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s;z-index:1}
+.profile-close:hover{background:rgba(0,0,0,0.7)}
 /* PREVIEW MODAL */
 .preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
 .preview-overlay.show{display:flex}
@@ -293,8 +373,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
         <span id="topbar-username"></span>
         <span class="admin-chip" id="admin-chip" style="display:none">Админ</span>
       </div>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Уведомления">
+        🔔<span class="notif-dot hidden" id="notif-dot">0</span>
+      </button>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Выйти</button>
     </div>
+  </div>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-panel-header">
+      <div class="notif-panel-title">🔔 Уведомления</div>
+      <button class="btn btn-ghost btn-sm" onclick="markAllRead()" style="font-size:10px">Всё прочитано</button>
+    </div>
+    <div class="notif-panel-body" id="notif-panel-body">
+      <div class="notif-empty">Нет уведомлений</div>
+    </div>
+  </div>
   </div>
 
   <div class="layout">
@@ -314,6 +409,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
       <div class="tab" id="tab-chart" onclick="switchTab('chart')">📈 График</div>
       <div class="tab" id="tab-files" onclick="switchTab('files')">📁 Файлы</div>
       <div class="tab" id="tab-upload" onclick="switchTab('upload')">⬆️ Загрузить</div>
+      <div class="tab" id="tab-badges" onclick="switchTab('badges')">🏅 Значки</div>
       <div class="tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">⚙️ Админ</div>
     </div>
 
@@ -363,6 +459,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
         <div class="progress-wrap" id="progress-wrap">
           <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
           <div class="prog-text" id="prog-text">Загрузка...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BADGES -->
+    <div id="section-badges" style="display:none">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <div class="card-title">🏅 Все значки</div>
+          <div class="badge-count" id="badges-earned-count">0 / 8</div>
+        </div>
+        <div style="padding:20px">
+          <div class="badge-grid" id="badges-grid"></div>
         </div>
       </div>
     </div>
@@ -419,6 +528,46 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   </div>
 </div>
 
+<!-- STUDENT PROFILE CARD -->
+<div class="profile-overlay" id="profile-card-overlay">
+  <div class="profile-card" style="position:relative">
+    <button class="profile-close" onclick="closeProfileCard()">✕ Закрыть</button>
+    <div class="profile-banner"><div class="profile-banner-pattern"></div>
+      <div class="profile-avatar-wrap"><div id="pcard-avatar"></div></div>
+    </div>
+    <div class="profile-body">
+      <div class="profile-name" id="pcard-name">—</div>
+      <div class="profile-joined" id="pcard-joined">—</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-value" id="pcard-total">0</div><div class="pstat-label">Всего стр.</div></div>
+        <div class="pstat"><div class="pstat-value" id="pcard-week">0</div><div class="pstat-label">За неделю</div></div>
+        <div class="pstat"><div class="pstat-value" id="pcard-rank">—</div><div class="pstat-label">Место</div></div>
+      </div>
+      <div class="profile-rank-bar">
+        <div class="prank-title">Прогресс относительно группы</div>
+        <div class="prank-row">
+          <div class="prank-label">За всё время</div>
+          <div class="prank-track"><div class="prank-fill" id="pcard-bar-total" style="width:0%;background:var(--accent)"></div></div>
+          <div class="prank-val" id="pcard-bar-total-val" style="color:var(--accent)">0%</div>
+        </div>
+        <div class="prank-row">
+          <div class="prank-label">За эту неделю</div>
+          <div class="prank-track"><div class="prank-fill" id="pcard-bar-week" style="width:0%;background:var(--blue)"></div></div>
+          <div class="prank-val" id="pcard-bar-week-val" style="color:var(--blue)">0%</div>
+        </div>
+      </div>
+      <div class="profile-recent" style="margin-bottom:12px">
+        <div class="precent-title">Значки</div>
+        <div id="pcard-badges" class="badges-row" style="margin-top:6px">—</div>
+      </div>
+      <div class="profile-recent">
+        <div class="precent-title">Последние записи</div>
+        <div id="pcard-recent">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PREVIEW MODAL -->
 <div class="preview-overlay" id="preview-overlay">
   <div class="preview-modal">
@@ -461,6 +610,16 @@ let activeTab = 'leaderboard';
 let lbMode = 'all';
 let chartInstance = null;
 const COLORS = ['#4ade80','#38bdf8','#a78bfa','#fb923c','#f87171','#fbbf24','#34d399'];
+const BADGE_DEFS = [
+  { id:'first_steps',  emoji:'📖', name:'Первые шаги',        desc:'Прочитал первые 10 страниц',      color:'#4ade80' },
+  { id:'sprinter',     emoji:'⚡', name:'Спринтер',            desc:'50+ страниц за один день',        color:'#fbbf24' },
+  { id:'daily_reader', emoji:'🔥', name:'Ежедневный читатель', desc:'10 дней подряд с записями',       color:'#f97316' },
+  { id:'rocket',       emoji:'🚀', name:'Ракета',              desc:'200+ страниц за неделю',          color:'#38bdf8' },
+  { id:'bookworm',     emoji:'📚', name:'Книжный червь',       desc:'Всего 500+ страниц',              color:'#a78bfa' },
+  { id:'legend',       emoji:'🏆', name:'Легенда',             desc:'Всего 1000+ страниц',             color:'#fbbf24' },
+  { id:'best_of_week', emoji:'🌟', name:'Лучший недели',       desc:'№1 в рейтинге за неделю',        color:'#f472b6' },
+  { id:'consistent',   emoji:'🎯', name:'Стабильный',          desc:'Записи в 4 разных неделях',      color:'#34d399' },
+];
 
 if (token && currentUser) showApp();
 
@@ -522,6 +681,9 @@ function showApp(){
     document.getElementById('tab-admin').style.display='';
   }
   loadLeaderboard(); loadStats();
+  loadNotifications();
+  // Poll notifications every 30s
+  setInterval(loadNotifications, 30000);
 }
 
 // ── AVATAR ────────────────────────────────────────────────────────
@@ -562,7 +724,7 @@ async function uploadAvatar(file){
 
 // ── TABS ─────────────────────────────────────────────────────────
 function switchTab(tab){
-  ['leaderboard','chart','files','upload','admin'].forEach(t=>{
+  ['leaderboard','chart','files','upload','badges','admin'].forEach(t=>{
     const s=document.getElementById(`section-${t}`);
     const tb=document.getElementById(`tab-${t}`);
     if(s) s.style.display=t===tab?'':'none';
@@ -571,6 +733,7 @@ function switchTab(tab){
   activeTab=tab;
   if(tab==='chart') loadChart();
   if(tab==='files') loadFiles();
+  if(tab==='badges') loadMyBadges();
   if(tab==='admin'){ loadAdminUsers(); loadAdminLogs(); loadStats(); }
 }
 
@@ -602,14 +765,15 @@ function renderLeaderboard(data){
     const rankClass=rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
     const rankEmoji=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const avatarEl=u.avatar_filename
-      ?`<img src="/avatars/${u.avatar_filename}" class="lb-avatar" onerror="this.outerHTML='<div class=lb-avatar-ph style=background:${COLORS[i%COLORS.length]}>${u.username[0].toUpperCase()}</div>'">`
-      :`<div class="lb-avatar-ph" style="background:${COLORS[i%COLORS.length]}">${u.username[0].toUpperCase()}</div>`;
+      ?`<img src="/avatars/${u.avatar_filename}" class="lb-avatar" style="cursor:pointer" onclick="openProfileCard(${u.id})" onerror="this.outerHTML='<div class=lb-avatar-ph style=background:${COLORS[i%COLORS.length]};cursor:pointer onclick=openProfileCard(${u.id})>${u.username[0].toUpperCase()}</div>'">`
+      :`<div class="lb-avatar-ph" style="background:${COLORS[i%COLORS.length]};cursor:pointer" onclick="openProfileCard(${u.id})">${u.username[0].toUpperCase()}</div>`;
     return `<div class="lb-row">
       <div class="lb-rank ${rankClass}">${rankEmoji}</div>
       ${avatarEl}
       <div class="lb-info">
-        <div class="lb-name">${esc(u.username)}</div>
+        <div class="lb-name" style="cursor:pointer" onclick="openProfileCard(${u.id})">${esc(u.username)}</div>
         <div class="lb-pages">${lbMode==='week'?'за эту неделю':'за всё время'}</div>
+        ${u.badges&&u.badges.length?`<div class="badges-row" style="margin-top:5px">${u.badges.slice(0,4).map(bid=>{const bd=BADGE_DEFS.find(b=>b.id===bid);return bd?`<span class="badge-pill" style="background:${bd.color}18;border-color:${bd.color}40;color:${bd.color}">${bd.emoji} ${bd.name}</span>`:''}).join('')}</div>`:''}
       </div>
       <div class="lb-score">${pages.toLocaleString('ru')}<br/><span>стр.</span></div>
     </div>`;
@@ -809,8 +973,8 @@ async function loadAdminUsers(){
     const el=document.getElementById('admin-users-list');
     el.innerHTML=d.users.map(u=>{
       const av=u.avatar_filename
-        ?`<img src="/avatars/${u.avatar_filename}" class="user-av" onerror="this.style.display='none'">`
-        :`<div class="user-av-ph" style="background:${COLORS[u.id%COLORS.length]}">${u.username[0].toUpperCase()}</div>`;
+        ?`<img src="/avatars/${u.avatar_filename}" class="user-av" style="cursor:pointer" onclick="openProfileCard(${u.id})" onerror="this.style.display='none'">`
+        :`<div class="user-av-ph" style="background:${COLORS[u.id%COLORS.length]};cursor:pointer" onclick="openProfileCard(${u.id})">${u.username[0].toUpperCase()}</div>`;
       return `<div class="user-row">
         <div class="user-row-left">
           ${av}
@@ -884,6 +1048,8 @@ async function addReadingLog(){
     document.getElementById('log-pages').value='';
     document.getElementById('log-note').value='';
     loadAdminLogs(); loadStats(); loadLeaderboard();
+    // If admin is adding for themselves, show badge popups
+    if(d.newBadges && d.newBadges.length){ d.newBadges.forEach((bid,i)=>setTimeout(()=>showBadgePopup(bid),i*1000)); loadNotifications(); }
   }catch{toast('Ошибка добавления записи','error');}
 }
 
@@ -910,6 +1076,260 @@ document.addEventListener('DOMContentLoaded',()=>{
   const today=new Date().toISOString().split('T')[0];
   const dateEl=document.getElementById('log-date');
   if(dateEl) dateEl.value=today;
+});
+
+
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────
+let _lastSeenNotifId = null;
+let _notifPopupShown = new Set();
+
+async function loadNotifications(){
+  try{
+    const r = await fetch(`${API}/api/notifications`,{headers:{Authorization:`Bearer ${token}`}});
+    const d = await r.json();
+
+    // Update bell counter
+    const dot = document.getElementById('notif-dot');
+    if(d.unread > 0){ dot.textContent=d.unread; dot.classList.remove('hidden'); }
+    else { dot.classList.add('hidden'); }
+
+    // Show popup for each NEW unread badge notification the student hasn't seen yet
+    const freshBadgeNotifs = d.notifications.filter(n =>
+      n.is_read === 0 &&
+      n.type === 'badge' &&
+      !_notifPopupShown.has(n.id)
+    );
+    freshBadgeNotifs.forEach((n, i) => {
+      _notifPopupShown.add(n.id);
+      // Extract badge_id from the notification title (e.g. "Новый значок: 🏅 Легенда")
+      const badge = BADGE_DEFS.find(b => n.title.includes(b.name));
+      if(badge) setTimeout(() => showBadgePopup(badge.id), i * 1200);
+    });
+
+    renderNotifPanel(d.notifications);
+  }catch{}
+}
+
+function renderNotifPanel(notifs){
+  const el = document.getElementById('notif-panel-body');
+  if(!notifs.length){ el.innerHTML='<div class="notif-empty">🎉 Нет новых уведомлений</div>'; return; }
+  el.innerHTML = notifs.map(n=>`
+    <div class="notif-item ${n.is_read?'':'unread'}">
+      <div class="notif-icon">${n.type==='badge'?'🏅':'📢'}</div>
+      <div class="notif-content">
+        <div class="notif-title">${esc(n.title)}</div>
+        <div class="notif-msg">${esc(n.message)}</div>
+        <div class="notif-time">${formatDate(n.created_at)}</div>
+      </div>
+      <button class="notif-del" onclick="deleteNotif(${n.id})" title="Удалить">✕</button>
+    </div>`).join('');
+}
+
+function toggleNotifPanel(){
+  const panel = document.getElementById('notif-panel');
+  panel.classList.toggle('show');
+  if(panel.classList.contains('show')) markAllRead();
+}
+
+async function markAllRead(){
+  try{
+    await fetch(`${API}/api/notifications/read`,{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+    document.getElementById('notif-dot').classList.add('hidden');
+    // Re-render without unread highlight
+    const r = await fetch(`${API}/api/notifications`,{headers:{Authorization:`Bearer ${token}`}});
+    const d = await r.json();
+    renderNotifPanel(d.notifications);
+  }catch{}
+}
+
+async function deleteNotif(id){
+  try{
+    await fetch(`${API}/api/notifications/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    loadNotifications();
+  }catch{}
+}
+
+// Close notif panel on outside click
+document.addEventListener('click', e=>{
+  const panel = document.getElementById('notif-panel');
+  const btn = document.getElementById('notif-btn');
+  if(panel && !panel.contains(e.target) && btn && !btn.contains(e.target)){
+    panel.classList.remove('show');
+  }
+});
+
+// ── BADGE AWARD POPUP ─────────────────────────────────────────────
+function showBadgePopup(badgeId){
+  const badge = BADGE_DEFS.find(b=>b.id===badgeId);
+  if(!badge) return;
+
+  // Remove any existing popup first
+  document.querySelectorAll('.badge-popup').forEach(p=>p.remove());
+
+  const popup = document.createElement('div');
+  popup.className = 'badge-popup';
+  popup.style.borderColor = badge.color + '80';
+  popup.style.boxShadow = `0 0 40px ${badge.color}30, 0 20px 60px rgba(0,0,0,.5)`;
+  popup.innerHTML = `
+    <span class="badge-popup-emoji" style="filter:drop-shadow(0 0 12px ${badge.color})">${badge.emoji}</span>
+    <div class="badge-popup-title" style="color:${badge.color}">🎉 Новый значок!</div>
+    <div class="badge-popup-name">${esc(badge.name)}</div>
+    <div class="badge-popup-desc">${esc(badge.desc)}</div>
+    <div style="margin-top:10px;font-size:10px;color:var(--muted)">Нажмите, чтобы закрыть</div>`;
+  popup.onclick = () => {
+    popup.style.animation = 'badgeIn .25s ease reverse both';
+    setTimeout(() => popup.remove(), 250);
+  };
+  document.body.appendChild(popup);
+
+  // Auto-dismiss after 5 seconds
+  setTimeout(()=>{
+    if(document.body.contains(popup)){
+      popup.style.animation = 'badgeIn .3s ease reverse both';
+      setTimeout(()=>{ if(document.body.contains(popup)) popup.remove(); }, 300);
+    }
+  }, 5000);
+}
+
+// ── MY BADGES ─────────────────────────────────────────────────────
+async function loadMyBadges(){
+  try{
+    const r = await fetch(`${API}/api/badges`,{headers:{Authorization:`Bearer ${token}`}});
+    const d = await r.json();
+    renderBadgeGrid(d.badges, 'badges-grid', 'badges-earned-count');
+  }catch{ toast('Не удалось загрузить значки','error'); }
+}
+
+function renderBadgeGrid(badges, gridId, countId){
+  const earned = badges.filter(b=>b.earned);
+  if(countId) document.getElementById(countId).textContent=`${earned.length} / ${badges.length}`;
+  const el = document.getElementById(gridId);
+  if(!el) return;
+  el.innerHTML = badges.map(b=>`
+    <div class="badge-card ${b.earned?'earned':'locked'}">
+      <div class="badge-emoji">${b.emoji}</div>
+      <div class="badge-name">${esc(b.name)}</div>
+      <div class="badge-desc">${esc(b.desc)}</div>
+      ${b.earned?`<div class="badge-earned-at">✓ ${b.earned_at?formatDate(b.earned_at):'Получен'}</div>`:'<div style="font-size:9px;color:var(--muted2);margin-top:2px">Ещё не получен</div>'}
+    </div>`).join('');
+}
+
+// ── STUDENT PROFILE CARD ─────────────────────────────────────────
+async function openProfileCard(userId){
+  document.getElementById('profile-card-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  // Reset
+  document.getElementById('pcard-name').textContent = '...';
+  document.getElementById('pcard-joined').textContent = '';
+  document.getElementById('pcard-total').textContent = '...';
+  document.getElementById('pcard-week').textContent = '...';
+  document.getElementById('pcard-rank').textContent = '...';
+  document.getElementById('pcard-recent').innerHTML = '<div style="color:var(--muted);font-size:11px">Загрузка...</div>';
+  document.getElementById('pcard-bar-total').style.width = '0%';
+  document.getElementById('pcard-bar-week').style.width = '0%';
+
+  try {
+    // Fetch leaderboard for rank + comparison
+    const [lbRes, usersRes] = await Promise.all([
+      fetch(`${API}/api/leaderboard`, {headers:{Authorization:`Bearer ${token}`}}),
+      fetch(`${API}/api/admin/users`, {headers:{Authorization:`Bearer ${token}`}})
+    ]);
+    const lbData = await lbRes.json();
+    const usersData = await usersRes.json();
+
+    const lb = lbData.leaderboard;
+    const user = usersData.users.find(u => u.id === userId);
+    const userLb = lb.find(u => u.id === userId);
+
+    if(!user){ closeProfileCard(); toast('Пользователь не найден','error'); return; }
+
+    // Avatar
+    const avatarWrap = document.getElementById('pcard-avatar');
+    const color = COLORS[userId % COLORS.length];
+    if(user.avatar_filename){
+      avatarWrap.innerHTML = `<img src="/avatars/${user.avatar_filename}" class="profile-avatar-lg" onerror="this.outerHTML='<div class=profile-avatar-lg-ph style=background:${color}>${user.username[0].toUpperCase()}</div>'"/>`;
+    } else {
+      avatarWrap.innerHTML = `<div class="profile-avatar-lg-ph" style="background:${color}">${user.username[0].toUpperCase()}</div>`;
+    }
+
+    // Name + admin badge
+    const isAdmin = user.is_admin ? '<span class="admin-chip">Админ</span>' : '';
+    document.getElementById('pcard-name').innerHTML = esc(user.username) + ' ' + isAdmin;
+    document.getElementById('pcard-joined').textContent = 'Зарегистрирован ' + formatDate(user.created_at);
+
+    // Stats
+    const totalPages = userLb ? userLb.total_pages : 0;
+    const weekPages  = userLb ? userLb.weekly_pages : 0;
+
+    // Rank among non-admins
+    const sortedByTotal = [...lb].sort((a,b) => b.total_pages - a.total_pages);
+    const rank = sortedByTotal.findIndex(u => u.id === userId) + 1;
+    const rankDisplay = rank > 0 ? `#${rank}` : '—';
+
+    document.getElementById('pcard-total').textContent = totalPages.toLocaleString('ru');
+    document.getElementById('pcard-week').textContent  = weekPages.toLocaleString('ru');
+    document.getElementById('pcard-rank').textContent  = rankDisplay;
+
+    // Progress bars relative to group max
+    const maxTotal = Math.max(...lb.map(u => u.total_pages), 1);
+    const maxWeek  = Math.max(...lb.map(u => u.weekly_pages), 1);
+    const pctTotal = Math.round((totalPages / maxTotal) * 100);
+    const pctWeek  = Math.round((weekPages  / maxWeek)  * 100);
+
+    setTimeout(() => {
+      document.getElementById('pcard-bar-total').style.width = pctTotal + '%';
+      document.getElementById('pcard-bar-week').style.width  = pctWeek  + '%';
+    }, 100);
+    document.getElementById('pcard-bar-total-val').textContent = pctTotal + '%';
+    document.getElementById('pcard-bar-week-val').textContent  = pctWeek  + '%';
+
+    // Load badges for this user
+    try {
+      const badgeRes = await fetch(`${API}/api/badges/${userId}`, {headers:{Authorization:`Bearer ${token}`}});
+      const badgeData = await badgeRes.json();
+      const earnedBadges = badgeData.badges.filter(b=>b.earned);
+      const bdgEl = document.getElementById('pcard-badges');
+      if(earnedBadges.length){
+        bdgEl.innerHTML = earnedBadges.map(b=>`<span class="badge-pill" style="background:${b.color}18;border-color:${b.color}40;color:${b.color}">${b.emoji} ${b.name}</span>`).join('');
+      } else {
+        bdgEl.innerHTML = '<span style="font-size:11px;color:var(--muted)">Значков пока нет</span>';
+      }
+    } catch { document.getElementById('pcard-badges').innerHTML='—'; }
+
+    // Recent reading logs (admin can see, others see leaderboard data only)
+    if(currentUser.is_admin){
+      const logRes = await fetch(`${API}/api/admin/reading/${userId}`, {headers:{Authorization:`Bearer ${token}`}});
+      const logData = await logRes.json();
+      const recent = logData.logs.slice(0, 5);
+      if(recent.length){
+        document.getElementById('pcard-recent').innerHTML = recent.map(l => `
+          <div class="precent-row">
+            <span class="precent-date">${l.log_date}</span>
+            <span class="precent-note">${esc(l.note||'')}</span>
+            <span class="precent-pages">+${l.pages} стр.</span>
+          </div>`).join('');
+      } else {
+        document.getElementById('pcard-recent').innerHTML = '<div style="color:var(--muted);font-size:11px;padding:4px 0">Записей пока нет</div>';
+      }
+    } else {
+      document.getElementById('pcard-recent').innerHTML = `<div style="color:var(--muted);font-size:11px;padding:4px 0">Всего прочитано: <span style="color:var(--accent);font-weight:600">${totalPages.toLocaleString('ru')} страниц</span></div>`;
+    }
+
+  } catch(e) {
+    toast('Не удалось загрузить профиль', 'error');
+    closeProfileCard();
+  }
+}
+
+function closeProfileCard(){
+  document.getElementById('profile-card-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('profile-card-overlay').addEventListener('click', function(e){
+  if(e.target === this) closeProfileCard();
 });
 
 // ── FILE PREVIEW ─────────────────────────────────────────────────
