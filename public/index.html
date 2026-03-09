@@ -213,6 +213,41 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   .form-row{grid-template-columns:1fr 1fr}
   .storage-card{flex-direction:column;align-items:flex-start}
   .storage-pct{align-self:flex-end}
+
+  /* Preview on mobile */
+  .preview-overlay{padding:0}
+  .preview-modal{max-width:100%;max-height:100vh;border-radius:0;border:none;height:100vh}
+  .preview-pdf{height:calc(100vh - 60px)}
+  .preview-img{max-height:calc(100vh - 80px)}
+  .preview-filename{max-width:180px;font-size:12px}
+  .preview-header{padding:10px 14px}
+
+  /* File rows on mobile — stack buttons */
+  .file-row{grid-template-columns:34px 1fr;gap:8px}
+  .file-size{display:none}
+  .file-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px;padding-bottom:4px}
+
+  /* Leaderboard on mobile */
+  .lb-score{min-width:60px;font-size:16px}
+  .lb-name{font-size:13px}
+
+  /* Tabs scroll on mobile */
+  .tabs{overflow-x:auto;flex-wrap:nowrap;max-width:100%}
+  .tabs::-webkit-scrollbar{display:none}
+
+  /* Admin form on mobile */
+  .form-row{grid-template-columns:1fr 1fr}
+  .log-form{padding:14px}
+
+  /* Topbar on mobile */
+  .topbar{padding:0 14px}
+  .topbar-logo{font-size:16px}
+}
+
+@media(max-width:400px){
+  .layout{padding:16px 12px}
+  .auth-box{padding:32px 20px}
+  .tab{padding:7px 12px;font-size:11px}
 }
 </style>
 </head>
