@@ -1,94 +1,88 @@
-# 🔐 VaultDrop — Private File Sharing
+# 📚 Китобхон
 
-A mini Dropbox for up to **7 users** with **500MB** shared storage.
+Платформа для отслеживания чтения и обмена файлами для небольшой группы студентов (до 7 человек).
 
-## Features
-- ✅ Register with username + password
-- ✅ First user to register becomes **Admin** automatically
-- ✅ Max 7 users — no more registrations after that
-- ✅ Upload, download, delete files
-- ✅ 500MB shared storage with live usage bar
-- ✅ Admin panel: manage users, remove accounts
-- ✅ Dark modern UI
+## Возможности
 
----
+- Регистрация и вход по логину и паролю
+- Первый зарегистрированный пользователь становится администратором
+- Максимум 7 пользователей
+- Загрузка, скачивание и удаление файлов (500 МБ общего хранилища)
+- Запись прочитанных страниц (только администратор)
+- Рейтинг лучших читателей — за всё время и за неделю
+- График прогресса чтения в стиле Codeforces
+- Фото профиля для каждого пользователя
+- Тёмный интерфейс на русском языке
 
-## 🚀 Quick Start (Local)
+## Стек
 
-### 1. Install Node.js
-Download from https://nodejs.org (v18 or higher recommended)
+- **Backend:** Node.js + Express
+- **База данных:** SQLite (better-sqlite3)
+- **Frontend:** Vanilla HTML/CSS/JS + Chart.js
+- **Аутентификация:** JWT + bcrypt
 
-### 2. Install dependencies
+## Быстрый старт
+
+**1. Установите Node.js** — https://nodejs.org (v18 и выше)
+
+**2. Установите зависимости**
 ```bash
 npm install
 ```
 
-### 3. Set up environment
+**3. Настройте окружение**
 ```bash
 cp .env.example .env
 ```
-Edit `.env` and change `JWT_SECRET` to something random and long.
+Откройте `.env` и замените `JWT_SECRET` на любую случайную строку.
 
-### 4. Run the server
+**4. Запустите**
 ```bash
 npm start
 ```
+Откройте http://localhost:3000
 
-Open http://localhost:3000 in your browser.
+## Деплой на Railway
 
----
+1. Залейте код на GitHub
+2. Зайдите на https://railway.app → New Project → Deploy from GitHub
+3. Добавьте переменную окружения: `JWT_SECRET=ваш_секрет`
+4. Railway выдаст публичный URL — поделитесь им с участниками
 
-## ☁️ Deploy to Railway (Free)
-
-1. Create account at https://railway.app
-2. Push this folder to a GitHub repo
-3. On Railway → "New Project" → "Deploy from GitHub repo"
-4. Add environment variable: `JWT_SECRET=your-secret-here`
-5. Railway gives you a live URL — share it with your 7 users!
-
-## ☁️ Deploy to Render (Free)
-
-1. Create account at https://render.com
-2. Push this folder to a GitHub repo
-3. New → Web Service → connect your repo
-4. Build Command: `npm install`
-5. Start Command: `npm start`
-6. Add environment variable: `JWT_SECRET=your-secret-here`
-7. Deploy!
-
----
-
-## 📁 Project Structure
+## Структура проекта
 
 ```
-vaultdrop/
-├── server.js          ← Backend (Node.js + Express)
+├── server.js          ← Сервер (API, авторизация, файлы, чтение)
 ├── package.json
-├── .env.example       ← Copy to .env and edit
-├── .gitignore
-├── uploads/           ← Where files are stored (auto-created)
-├── vaultdrop.db       ← SQLite database (auto-created)
-└── public/
-    └── index.html     ← Frontend (all-in-one HTML)
+├── .env.example
+├── public/
+│   └── index.html     ← Весь фронтенд
+├── uploads/           ← Загруженные файлы (создаётся автоматически)
+├── avatars/           ← Фото профилей (создаётся автоматически)
+└── kitobxon.db        ← База данных (создаётся автоматически)
 ```
 
----
+## Как устроены пользователи
 
-## 🔑 How Users Work
-
-| Rule | Detail |
-|------|--------|
-| First to register | Becomes admin |
-| Max users | 7 (enforced by server) |
-| Admin can | Delete any file, remove users |
-| Regular users | Upload, download, delete their own files |
-| Passwords | Securely hashed with bcrypt |
-| Sessions | JWT tokens, expire after 7 days |
+| Правило | Подробности |
+|---|---|
+| Первый зарегистрированный | Становится администратором |
+| Максимум пользователей | 7 |
+| Администратор | Удаляет файлы, пользователей, записывает страницы |
+| Студент | Загружает/скачивает файлы, ставит фото профиля |
+| Пароли | Хэшируются через bcrypt |
+| Сессии | JWT-токены, срок действия 7 дней |
 
 ---
 
-## ⚠️ Notes
+## Вклад в проект
 
-- **Storage is shared** across all users (500MB total)
-- Files are stored on the server's disk — if you use Railway/Render free tier, files may be lost on redeploy. For permanent storage, consider upgrading or using Cloudflare R2 / AWS S3.
-- Change `JWT_SECRET` in `.env` before deploying!
+Если вы хотите улучшить код — будем рады!
+
+1. Сделайте **fork** этого репозитория
+2. Создайте новую ветку: `git checkout -b feature/моё-улучшение`
+3. Внесите изменения и сделайте коммит: `git commit -m "Добавил улучшение"`
+4. Отправьте ветку: `git push origin feature/моё-улучшение`
+5. Откройте **Pull Request** — я рассмотрю и приму 🙌
+
+Любые улучшения приветствуются: новые функции, исправление багов, улучшение дизайна или оптимизация кода.
