@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -431,45 +431,45 @@
 
       <!-- LOGIN -->
       <div id="login-form">
-        <div class="auth-title">Welcome back</div>
-        <div class="auth-sub">// Sign in to your account</div>
+        <div class="auth-title">С возвращением</div>
+        <div class="auth-sub">// Войдите в свой аккаунт</div>
         <div class="alert error" id="login-error"></div>
         <div class="field">
-          <label>Username</label>
-          <input type="text" id="login-username" placeholder="your_username" autocomplete="username" />
+          <label>Имя пользователя</label>
+          <input type="text" id="login-username" placeholder="ваш_логин" autocomplete="username" />
         </div>
         <div class="field">
-          <label>Password</label>
+          <label>Пароль</label>
           <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
         </div>
         <button class="btn btn-primary" onclick="doLogin()">
-          <span>Sign In</span>
+          <span>Войти</span>
         </button>
-        <div class="auth-switch">No account? <a onclick="showRegister()">Create one</a></div>
+        <div class="auth-switch">Нет аккаунта? <a onclick="showRegister()">Создать</a></div>
       </div>
 
       <!-- REGISTER -->
       <div id="register-form" style="display:none">
-        <div class="auth-title">Create account</div>
-        <div class="auth-sub">// First to join becomes admin • 7 spots total</div>
+        <div class="auth-title">Создать аккаунт</div>
+        <div class="auth-sub">// Первый зарегистрированный — администратор • Всего 7 мест</div>
         <div class="alert error" id="register-error"></div>
         <div class="alert success" id="register-success"></div>
         <div class="field">
-          <label>Username</label>
-          <input type="text" id="reg-username" placeholder="choose_a_username" autocomplete="username" />
+          <label>Имя пользователя</label>
+          <input type="text" id="reg-username" placeholder="придумайте_логин" autocomplete="username" />
         </div>
         <div class="field">
-          <label>Password</label>
-          <input type="password" id="reg-password" placeholder="min. 6 characters" autocomplete="new-password" />
+          <label>Пароль</label>
+          <input type="password" id="reg-password" placeholder="мин. 6 символов" autocomplete="new-password" />
         </div>
         <div class="field">
-          <label>Confirm Password</label>
-          <input type="password" id="reg-confirm" placeholder="repeat password" autocomplete="new-password" />
+          <label>Подтвердите пароль</label>
+          <input type="password" id="reg-confirm" placeholder="повторите пароль" autocomplete="new-password" />
         </div>
         <button class="btn btn-primary" onclick="doRegister()">
-          <span>Create Account</span>
+          <span>Создать аккаунт</span>
         </button>
-        <div class="auth-switch">Have an account? <a onclick="showLogin()">Sign in</a></div>
+        <div class="auth-switch">Уже есть аккаунт? <a onclick="showLogin()">Войти</a></div>
       </div>
     </div>
   </div>
@@ -483,9 +483,9 @@
         <div class="user-badge">
           <div class="avatar" id="topbar-avatar">U</div>
           <span id="topbar-username">user</span>
-          <span class="admin-chip" id="admin-chip" style="display:none">Admin</span>
+          <span class="admin-chip" id="admin-chip" style="display:none">Админ</span>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Выйти</button>
       </div>
     </div>
 
@@ -493,7 +493,7 @@
       <!-- STORAGE BAR -->
       <div class="storage-card">
         <div class="storage-info">
-          <div class="storage-label">Storage Usage</div>
+          <div class="storage-label">Использование хранилища</div>
           <div class="storage-bar-track">
             <div class="storage-bar-fill" id="storage-bar" style="width:0%"></div>
           </div>
@@ -505,9 +505,9 @@
       <!-- TABS -->
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
         <div class="tabs">
-          <div class="tab active" id="tab-files" onclick="switchTab('files')">Files</div>
-          <div class="tab" id="tab-upload" onclick="switchTab('upload')">Upload</div>
-          <div class="tab admin-tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">Admin</div>
+          <div class="tab active" id="tab-files" onclick="switchTab('files')">Файлы</div>
+          <div class="tab" id="tab-upload" onclick="switchTab('upload')">Загрузить</div>
+          <div class="tab admin-tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">Админ</div>
         </div>
       </div>
 
@@ -515,7 +515,7 @@
       <div id="section-files">
         <div class="files-card">
           <div class="files-header">
-            <div class="files-header-title">All Files</div>
+            <div class="files-header-title">Все файлы</div>
             <div class="file-count" id="file-count">0 files</div>
           </div>
           <div id="files-list">
@@ -532,8 +532,8 @@
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
           <input type="file" id="file-input" multiple onchange="handleFiles(this.files)" />
           <div class="upload-icon">⬆️</div>
-          <div class="upload-title">Drop files here or click to browse</div>
-          <div class="upload-sub">Any file type • Max file size limited by remaining storage</div>
+          <div class="upload-title">Перетащите файлы сюда или нажмите для выбора</div>
+          <div class="upload-sub">Любой тип файлов • Размер ограничен оставшимся местом</div>
           <div class="upload-progress" id="upload-progress">
             <div class="progress-bar-track">
               <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
@@ -547,21 +547,21 @@
       <div id="section-admin" style="display:none">
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">Total Users</div>
+            <div class="stat-label">Всего пользователей</div>
             <div class="stat-value" id="admin-users-count">–</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Total Files</div>
+            <div class="stat-label">Всего файлов</div>
             <div class="stat-value" id="admin-files-count">–</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Slots Left</div>
+            <div class="stat-label">Свободных мест</div>
             <div class="stat-value" id="admin-slots-left">–</div>
           </div>
         </div>
 
         <div class="section-title">
-          Users <span class="badge">ADMIN</span>
+          Пользователи <span class="badge">АДМИН</span>
         </div>
         <div class="users-card">
           <div id="admin-users-list">
@@ -602,7 +602,7 @@
     const password = document.getElementById('login-password').value;
     const errEl = document.getElementById('login-error');
     errEl.classList.remove('show');
-    if (!username || !password) { showErr(errEl, 'Please fill in all fields'); return; }
+    if (!username || !password) { showErr(errEl, 'Заполните все поля'); return; }
 
     try {
       const r = await fetch(`${API}/api/login`, {
@@ -613,7 +613,7 @@
       if (!r.ok) { showErr(errEl, d.error); return; }
       saveSession(d);
       showApp();
-    } catch { showErr(errEl, 'Connection error. Is the server running?'); }
+    } catch { showErr(errEl, 'Ошибка подключения. Сервер запущен?'); }
   }
 
   async function doRegister() {
@@ -624,9 +624,9 @@
     const sucEl    = document.getElementById('register-success');
     errEl.classList.remove('show'); sucEl.classList.remove('show');
 
-    if (!username || !password) { showErr(errEl, 'Please fill in all fields'); return; }
-    if (password !== confirm) { showErr(errEl, 'Passwords do not match'); return; }
-    if (password.length < 6) { showErr(errEl, 'Password must be at least 6 characters'); return; }
+    if (!username || !password) { showErr(errEl, 'Заполните все поля'); return; }
+    if (password !== confirm) { showErr(errEl, 'Пароли не совпадают'); return; }
+    if (password.length < 6) { showErr(errEl, 'Пароль должен содержать не менее 6 символов'); return; }
 
     try {
       const r = await fetch(`${API}/api/register`, {
@@ -637,7 +637,7 @@
       if (!r.ok) { showErr(errEl, d.error); return; }
       saveSession(d);
       showApp();
-    } catch { showErr(errEl, 'Connection error. Is the server running?'); }
+    } catch { showErr(errEl, 'Ошибка подключения. Сервер запущен?'); }
   }
 
   function saveSession(data) {
@@ -677,14 +677,14 @@
       const d = await r.json();
       renderFiles(d.files);
       updateStorageBar(d.usedBytes, d.maxBytes);
-    } catch { toast('Failed to load files', 'error'); }
+    } catch { toast('Не удалось загрузить файлы', 'error'); }
   }
 
   function renderFiles(files) {
     const el = document.getElementById('files-list');
-    document.getElementById('file-count').textContent = `${files.length} file${files.length !== 1 ? 's' : ''}`;
+    document.getElementById('file-count').textContent = `${files.length} файл${files.length === 1 ? '' : files.length >= 2 && files.length <= 4 ? 'а' : 'ов'}`;
     if (!files.length) {
-      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>No files yet — upload something!</div></div>`;
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>Файлов пока нет — загрузите что-нибудь!</div></div>`;
       return;
     }
     el.innerHTML = files.map(f => `
@@ -692,11 +692,11 @@
         <div class="file-icon">${getFileEmoji(f.original_name)}</div>
         <div class="file-info">
           <div class="file-name" title="${esc(f.original_name)}">${esc(f.original_name)}</div>
-          <div class="file-meta">by ${esc(f.uploaded_by_username)} · ${formatDate(f.created_at)}</div>
+          <div class="file-meta">от ${esc(f.uploaded_by_username)} · ${formatDate(f.created_at)}</div>
         </div>
         <div class="file-size">${formatBytes(f.size)}</div>
         <div class="file-actions">
-          <button class="btn-download" onclick="downloadFile(${f.id}, '${esc(f.original_name)}')">↓ Download</button>
+          <button class="btn-download" onclick="downloadFile(${f.id}, '${esc(f.original_name)}')">↓ Скачать</button>
           ${currentUser.is_admin ? `<button class="btn btn-danger" onclick="deleteFile(${f.id})">✕</button>` : ''}
         </div>
       </div>
@@ -712,23 +712,23 @@
     const headers = { Authorization: `Bearer ${token}` };
     try {
       const r = await fetch(a.href, { headers });
-      if (!r.ok) { toast('Download failed', 'error'); return; }
+      if (!r.ok) { toast('Ошибка скачивания', 'error'); return; }
       const blob = await r.blob();
       const url = URL.createObjectURL(blob);
       a.href = url; document.body.appendChild(a); a.click();
       document.body.removeChild(a); URL.revokeObjectURL(url);
-    } catch { toast('Download error', 'error'); }
+    } catch { toast('Ошибка скачивания', 'error'); }
   }
 
   async function deleteFile(id) {
-    if (!confirm('Delete this file?')) return;
+    if (!confirm('Удалить этот файл?')) return;
     try {
       const r = await fetch(`${API}/api/files/${id}`, {
         method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
       });
-      if (r.ok) { toast('File deleted', 'success'); loadFiles(); loadStats(); }
+      if (r.ok) { toast('Файл удалён', 'success'); loadFiles(); loadStats(); }
       else { const d = await r.json(); toast(d.error, 'error'); }
-    } catch { toast('Delete failed', 'error'); }
+    } catch { toast('Не удалось удалить', 'error'); }
   }
 
   // ── UPLOAD ──
@@ -746,7 +746,7 @@
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      textEl.textContent = `Uploading ${i+1}/${files.length}: ${file.name}`;
+      textEl.textContent = `Загрузка ${i+1}/${files.length}: ${file.name}`;
       fillEl.style.width = `${((i) / files.length) * 100}%`;
       const fd = new FormData();
       fd.append('file', file);
@@ -758,12 +758,12 @@
         });
         const d = await r.json();
         if (!r.ok) { toast(d.error, 'error'); }
-        else { toast(`Uploaded: ${file.name}`, 'success'); }
-      } catch { toast(`Failed: ${file.name}`, 'error'); }
+        else { toast(`Загружено: ${file.name}`, 'success'); }
+      } catch { toast(`Ошибка: ${file.name}`, 'error'); }
     }
 
     fillEl.style.width = '100%';
-    textEl.textContent = 'Done!';
+    textEl.textContent = 'Готово!';
     setTimeout(() => { progressEl.style.display = 'none'; fillEl.style.width = '0%'; }, 1500);
     document.getElementById('file-input').value = '';
     loadFiles();
@@ -790,7 +790,7 @@
     bar.style.width = `${pct}%`;
     bar.className = 'storage-bar-fill' + (pct >= 90 ? ' full' : pct >= 70 ? ' warn' : '');
     document.getElementById('storage-pct').textContent = `${pct}%`;
-    document.getElementById('storage-text').textContent = `${formatBytes(used)} used of ${formatBytes(max)}`;
+    document.getElementById('storage-text').textContent = `${formatBytes(used)} использовано из ${formatBytes(max)}`;
   }
 
   // ── ADMIN ──
@@ -805,24 +805,24 @@
             <div class="user-avatar-lg">${u.username[0].toUpperCase()}</div>
             <div>
               <div class="user-name">${esc(u.username)} ${u.is_admin ? '<span class="admin-chip">Admin</span>' : ''}</div>
-              <div class="user-since">Joined ${formatDate(u.created_at)}</div>
+              <div class="user-since">Зарегистрирован ${formatDate(u.created_at)}</div>
             </div>
           </div>
-          ${u.id !== currentUser.id ? `<button class="btn btn-danger" onclick="deleteUser(${u.id})">Remove User</button>` : '<span style="font-size:10px;color:var(--muted)">You</span>'}
+          ${u.id !== currentUser.id ? `<button class="btn btn-danger" onclick="deleteUser(${u.id})">Удалить</button>` : '<span style="font-size:10px;color:var(--muted)">Вы</span>'}
         </div>
       `).join('');
-    } catch { toast('Failed to load users', 'error'); }
+    } catch { toast('Не удалось загрузить пользователей', 'error'); }
   }
 
   async function deleteUser(id) {
-    if (!confirm('Remove this user and all their files?')) return;
+    if (!confirm('Удалить этого пользователя и все его файлы?')) return;
     try {
       const r = await fetch(`${API}/api/admin/users/${id}`, {
         method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
       });
-      if (r.ok) { toast('User removed', 'success'); loadAdminUsers(); loadFiles(); loadStats(); }
+      if (r.ok) { toast('Пользователь удалён', 'success'); loadAdminUsers(); loadFiles(); loadStats(); }
       else { const d = await r.json(); toast(d.error, 'error'); }
-    } catch { toast('Failed', 'error'); }
+    } catch { toast('Ошибка', 'error'); }
   }
 
   // ── TABS ──
@@ -845,7 +845,7 @@
     return `${(b/1073741824).toFixed(2)} GB`;
   }
   function formatDate(d) {
-    return new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    return new Date(d).toLocaleDateString('ru-RU', {month:'short', day:'numeric', year:'numeric'});
   }
   function getFileEmoji(name) {
     const ext = name.split('.').pop().toLowerCase();
