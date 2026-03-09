@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VaultDrop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #080b0f;
+      --surface:  #0e1318;
+      --card:     #131920;
+      --border:   #1e2a35;
+      --border2:  #263545;
+      --accent:   #00d4ff;
+      --accent2:  #0099cc;
+      --danger:   #ff4455;
+      --success:  #00e5a0;
+      --warn:     #ffaa00;
+      --text:     #e8f0f7;
+      --muted:    #6b8199;
+      --muted2:   #3d5570;
+      --glow:     0 0 20px rgba(0,212,255,0.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    #app { position: relative; z-index: 1; }
+
+    /* ── AUTH SCREEN ── */
+    #auth-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .auth-box {
+      width: 100%; max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.5), var(--glow);
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(20px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 36px;
+    }
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(0,212,255,0.3);
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .logo-text span { color: var(--accent); }
+    .auth-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .auth-sub {
+      font-size: 11px; color: var(--muted);
+      margin-bottom: 32px; letter-spacing: 0.3px;
+    }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 10px; font-weight: 500;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .field input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+      transition: all 0.2s; text-decoration: none; letter-spacing: 0.3px;
+    }
+    .btn-primary {
+      background: var(--accent); color: #000;
+      width: 100%; margin-top: 8px;
+    }
+    .btn-primary:hover { background: #33deff; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); font-size: 12px;
+    }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+    .btn-danger { background: rgba(255,68,85,0.1); color: var(--danger); border: 1px solid rgba(255,68,85,0.2); font-size: 11px; padding: 6px 12px; }
+    .btn-danger:hover { background: rgba(255,68,85,0.2); }
+    .btn-sm { padding: 7px 14px; font-size: 11px; }
+    .auth-switch {
+      margin-top: 20px; text-align: center;
+      font-size: 12px; color: var(--muted);
+    }
+    .auth-switch a { color: var(--accent); cursor: pointer; text-decoration: none; }
+    .auth-switch a:hover { text-decoration: underline; }
+    .alert {
+      padding: 10px 14px; border-radius: 8px; font-size: 12px;
+      margin-bottom: 16px; display: none;
+    }
+    .alert.error { background: rgba(255,68,85,0.1); border: 1px solid rgba(255,68,85,0.3); color: var(--danger); }
+    .alert.success { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3); color: var(--success); }
+    .alert.show { display: block; animation: fadeUp 0.3s ease both; }
+
+    /* ── MAIN APP ── */
+    #main-app { display: none; min-height: 100vh; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,11,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    }
+    .topbar-logo .dot { color: var(--accent); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .user-badge {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--muted);
+    }
+    .user-badge .avatar {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #000;
+      font-family: 'Syne', sans-serif;
+    }
+    .admin-chip {
+      font-size: 9px; font-weight: 600;
+      background: rgba(255,170,0,0.15); color: var(--warn);
+      border: 1px solid rgba(255,170,0,0.25);
+      padding: 2px 7px; border-radius: 4px; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1000px; margin: 0 auto;
+      padding: 32px 24px;
+      display: grid; gap: 24px;
+    }
+
+    /* ── STORAGE BAR ── */
+    .storage-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .storage-info { flex: 1; }
+    .storage-label {
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .storage-bar-track {
+      height: 6px; background: var(--card);
+      border-radius: 999px; overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .storage-bar-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.5s ease;
+      box-shadow: 0 0 8px rgba(0,212,255,0.4);
+    }
+    .storage-bar-fill.warn { background: linear-gradient(90deg, var(--warn), #ff8800); }
+    .storage-bar-fill.full { background: linear-gradient(90deg, var(--danger), #cc0011); }
+    .storage-text { font-size: 11px; color: var(--muted); }
+    .storage-pct {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800;
+      color: var(--accent); min-width: 70px; text-align: right;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 4px;
+      width: fit-content;
+    }
+    .tab {
+      padding: 8px 18px; border-radius: 7px;
+      font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    .tab.active { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .tab:hover:not(.active) { color: var(--text); }
+
+    /* ── UPLOAD ZONE ── */
+    .upload-zone {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+    .upload-icon { font-size: 36px; margin-bottom: 12px; }
+    .upload-title {
+      font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .upload-sub { font-size: 11px; color: var(--muted); }
+    #file-input { display: none; }
+    .upload-progress {
+      margin-top: 16px; display: none;
+    }
+    .progress-bar-track {
+      height: 4px; background: var(--card); border-radius: 999px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent);
+      border-radius: 999px; transition: width 0.3s;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+    .progress-text { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+    /* ── FILES LIST ── */
+    .files-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .files-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .files-header-title {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    }
+    .file-count {
+      font-size: 10px; color: var(--muted);
+      background: var(--card); padding: 3px 8px; border-radius: 4px;
+    }
+    .file-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto auto;
+      align-items: center; gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      animation: fadeUp 0.3s ease both;
+    }
+    .file-row:last-child { border-bottom: none; }
+    .file-row:hover { background: rgba(255,255,255,0.02); }
+    .file-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .file-info { overflow: hidden; }
+    .file-name {
+      font-size: 13px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .file-meta { font-size: 10px; color: var(--muted); }
+    .file-size {
+      font-size: 11px; color: var(--muted); white-space: nowrap;
+      min-width: 60px; text-align: right;
+    }
+    .file-actions { display: flex; gap: 6px; }
+    .btn-download {
+      background: rgba(0,212,255,0.08); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.2); font-size: 11px;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer;
+      font-family: 'JetBrains Mono', monospace; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-download:hover { background: rgba(0,212,255,0.15); }
+    .empty-state {
+      padding: 60px 20px; text-align: center;
+      color: var(--muted); font-size: 12px;
+    }
+    .empty-state .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+
+    /* ── ADMIN PANEL ── */
+    .admin-section { display: none; }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-title .badge {
+      font-size: 9px; background: rgba(255,170,0,0.15); color: var(--warn);
+      border: 1px solid rgba(255,170,0,0.25); padding: 2px 7px;
+      border-radius: 4px; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;
+    }
+    .user-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.3s ease both;
+    }
+    .user-row:last-child { border-bottom: none; }
+    .user-row-left { display: flex; align-items: center; gap: 12px; }
+    .user-avatar-lg {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #0066ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #000;
+      font-family: 'Syne', sans-serif;
+    }
+    .user-name { font-size: 13px; font-weight: 500; }
+    .user-since { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .users-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 20px;
+    }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--accent); }
+
+    /* ── LOADING ── */
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid rgba(0,212,255,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 12px; display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: toastIn 0.3s ease both;
+      max-width: 320px;
+    }
+    .toast.error { border-color: rgba(255,68,85,0.3); }
+    .toast.success { border-color: rgba(0,229,160,0.3); }
+    @keyframes toastIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+    @keyframes toastOut { to { opacity:0; transform: translateX(20px); } }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <div class="logo">
+        <div class="logo-icon">🔐</div>
+        <div class="logo-text">Vault<span>Drop</span></div>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="login-form">
+        <div class="auth-title">Welcome back</div>
+        <div class="auth-sub">// Sign in to your account</div>
+        <div class="alert error" id="login-error"></div>
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="login-username" placeholder="your_username" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">
+          <span>Sign In</span>
+        </button>
+        <div class="auth-switch">No account? <a onclick="showRegister()">Create one</a></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="register-form" style="display:none">
+        <div class="auth-title">Create account</div>
+        <div class="auth-sub">// First to join becomes admin • 7 spots total</div>
+        <div class="alert error" id="register-error"></div>
+        <div class="alert success" id="register-success"></div>
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="reg-username" placeholder="choose_a_username" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="min. 6 characters" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label>Confirm Password</label>
+          <input type="password" id="reg-confirm" placeholder="repeat password" autocomplete="new-password" />
+        </div>
+        <button class="btn btn-primary" onclick="doRegister()">
+          <span>Create Account</span>
+        </button>
+        <div class="auth-switch">Have an account? <a onclick="showLogin()">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="main-app">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-logo">Vault<span class="dot">.</span>Drop</div>
+      <div class="topbar-right">
+        <div class="user-badge">
+          <div class="avatar" id="topbar-avatar">U</div>
+          <span id="topbar-username">user</span>
+          <span class="admin-chip" id="admin-chip" style="display:none">Admin</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- STORAGE BAR -->
+      <div class="storage-card">
+        <div class="storage-info">
+          <div class="storage-label">Storage Usage</div>
+          <div class="storage-bar-track">
+            <div class="storage-bar-fill" id="storage-bar" style="width:0%"></div>
+          </div>
+          <div class="storage-text" id="storage-text">Calculating...</div>
+        </div>
+        <div class="storage-pct" id="storage-pct">0%</div>
+      </div>
+
+      <!-- TABS -->
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <div class="tabs">
+          <div class="tab active" id="tab-files" onclick="switchTab('files')">Files</div>
+          <div class="tab" id="tab-upload" onclick="switchTab('upload')">Upload</div>
+          <div class="tab admin-tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">Admin</div>
+        </div>
+      </div>
+
+      <!-- FILES TAB -->
+      <div id="section-files">
+        <div class="files-card">
+          <div class="files-header">
+            <div class="files-header-title">All Files</div>
+            <div class="file-count" id="file-count">0 files</div>
+          </div>
+          <div id="files-list">
+            <div class="empty-state">
+              <div class="empty-icon">📁</div>
+              <div>No files uploaded yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD TAB -->
+      <div id="section-upload" style="display:none">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <input type="file" id="file-input" multiple onchange="handleFiles(this.files)" />
+          <div class="upload-icon">⬆️</div>
+          <div class="upload-title">Drop files here or click to browse</div>
+          <div class="upload-sub">Any file type • Max file size limited by remaining storage</div>
+          <div class="upload-progress" id="upload-progress">
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Uploading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN TAB -->
+      <div id="section-admin" style="display:none">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value" id="admin-users-count">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Files</div>
+            <div class="stat-value" id="admin-files-count">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Slots Left</div>
+            <div class="stat-value" id="admin-slots-left">–</div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          Users <span class="badge">ADMIN</span>
+        </div>
+        <div class="users-card">
+          <div id="admin-users-list">
+            <div class="empty-state"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+  const API = '';
+  let token = localStorage.getItem('vd_token');
+  let currentUser = JSON.parse(localStorage.getItem('vd_user') || 'null');
+  let activeTab = 'files';
+
+  // ── INIT ──
+  if (token && currentUser) {
+    showApp();
+  }
+
+  // ── AUTH ──
+  function showRegister() {
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('register-form').style.display = '';
+  }
+  function showLogin() {
+    document.getElementById('register-form').style.display = 'none';
+    document.getElementById('login-form').style.display = '';
+  }
+
+  async function doLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    errEl.classList.remove('show');
+    if (!username || !password) { showErr(errEl, 'Please fill in all fields'); return; }
+
+    try {
+      const r = await fetch(`${API}/api/login`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({username, password})
+      });
+      const d = await r.json();
+      if (!r.ok) { showErr(errEl, d.error); return; }
+      saveSession(d);
+      showApp();
+    } catch { showErr(errEl, 'Connection error. Is the server running?'); }
+  }
+
+  async function doRegister() {
+    const username = document.getElementById('reg-username').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const confirm  = document.getElementById('reg-confirm').value;
+    const errEl    = document.getElementById('register-error');
+    const sucEl    = document.getElementById('register-success');
+    errEl.classList.remove('show'); sucEl.classList.remove('show');
+
+    if (!username || !password) { showErr(errEl, 'Please fill in all fields'); return; }
+    if (password !== confirm) { showErr(errEl, 'Passwords do not match'); return; }
+    if (password.length < 6) { showErr(errEl, 'Password must be at least 6 characters'); return; }
+
+    try {
+      const r = await fetch(`${API}/api/register`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({username, password})
+      });
+      const d = await r.json();
+      if (!r.ok) { showErr(errEl, d.error); return; }
+      saveSession(d);
+      showApp();
+    } catch { showErr(errEl, 'Connection error. Is the server running?'); }
+  }
+
+  function saveSession(data) {
+    token = data.token;
+    currentUser = {username: data.username, is_admin: data.is_admin};
+    localStorage.setItem('vd_token', token);
+    localStorage.setItem('vd_user', JSON.stringify(currentUser));
+  }
+
+  function logout() {
+    localStorage.removeItem('vd_token');
+    localStorage.removeItem('vd_user');
+    token = null; currentUser = null;
+    document.getElementById('main-app').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'flex';
+    showLogin();
+  }
+
+  function showApp() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('topbar-username').textContent = currentUser.username;
+    document.getElementById('topbar-avatar').textContent = currentUser.username[0].toUpperCase();
+    if (currentUser.is_admin) {
+      document.getElementById('admin-chip').style.display = '';
+      document.getElementById('tab-admin').style.display = '';
+    }
+    loadFiles();
+    loadStats();
+  }
+
+  // ── FILES ──
+  async function loadFiles() {
+    try {
+      const r = await fetch(`${API}/api/files`, { headers: { Authorization: `Bearer ${token}` } });
+      if (r.status === 401) { logout(); return; }
+      const d = await r.json();
+      renderFiles(d.files);
+      updateStorageBar(d.usedBytes, d.maxBytes);
+    } catch { toast('Failed to load files', 'error'); }
+  }
+
+  function renderFiles(files) {
+    const el = document.getElementById('files-list');
+    document.getElementById('file-count').textContent = `${files.length} file${files.length !== 1 ? 's' : ''}`;
+    if (!files.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>No files yet — upload something!</div></div>`;
+      return;
+    }
+    el.innerHTML = files.map(f => `
+      <div class="file-row" id="file-${f.id}">
+        <div class="file-icon">${getFileEmoji(f.original_name)}</div>
+        <div class="file-info">
+          <div class="file-name" title="${esc(f.original_name)}">${esc(f.original_name)}</div>
+          <div class="file-meta">by ${esc(f.uploaded_by_username)} · ${formatDate(f.created_at)}</div>
+        </div>
+        <div class="file-size">${formatBytes(f.size)}</div>
+        <div class="file-actions">
+          <button class="btn-download" onclick="downloadFile(${f.id}, '${esc(f.original_name)}')">↓ Download</button>
+          ${currentUser.is_admin ? `<button class="btn btn-danger" onclick="deleteFile(${f.id})">✕</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function downloadFile(id, name) {
+    const a = document.createElement('a');
+    a.href = `${API}/api/download/${id}`;
+    a.download = name;
+    a.style.display = 'none';
+
+    const headers = { Authorization: `Bearer ${token}` };
+    try {
+      const r = await fetch(a.href, { headers });
+      if (!r.ok) { toast('Download failed', 'error'); return; }
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      a.href = url; document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    } catch { toast('Download error', 'error'); }
+  }
+
+  async function deleteFile(id) {
+    if (!confirm('Delete this file?')) return;
+    try {
+      const r = await fetch(`${API}/api/files/${id}`, {
+        method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
+      });
+      if (r.ok) { toast('File deleted', 'success'); loadFiles(); loadStats(); }
+      else { const d = await r.json(); toast(d.error, 'error'); }
+    } catch { toast('Delete failed', 'error'); }
+  }
+
+  // ── UPLOAD ──
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
+
+  async function handleFiles(files) {
+    if (!files.length) return;
+    const progressEl = document.getElementById('upload-progress');
+    const fillEl     = document.getElementById('progress-fill');
+    const textEl     = document.getElementById('progress-text');
+    progressEl.style.display = 'block';
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      textEl.textContent = `Uploading ${i+1}/${files.length}: ${file.name}`;
+      fillEl.style.width = `${((i) / files.length) * 100}%`;
+      const fd = new FormData();
+      fd.append('file', file);
+      try {
+        const r = await fetch(`${API}/api/upload`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd
+        });
+        const d = await r.json();
+        if (!r.ok) { toast(d.error, 'error'); }
+        else { toast(`Uploaded: ${file.name}`, 'success'); }
+      } catch { toast(`Failed: ${file.name}`, 'error'); }
+    }
+
+    fillEl.style.width = '100%';
+    textEl.textContent = 'Done!';
+    setTimeout(() => { progressEl.style.display = 'none'; fillEl.style.width = '0%'; }, 1500);
+    document.getElementById('file-input').value = '';
+    loadFiles();
+    loadStats();
+  }
+
+  // ── STATS / STORAGE ──
+  async function loadStats() {
+    try {
+      const r = await fetch(`${API}/api/stats`, { headers: { Authorization: `Bearer ${token}` } });
+      const d = await r.json();
+      updateStorageBar(d.usedBytes, d.maxBytes);
+      if (currentUser.is_admin) {
+        document.getElementById('admin-users-count').textContent = d.userCount;
+        document.getElementById('admin-files-count').textContent = d.fileCount;
+        document.getElementById('admin-slots-left').textContent = d.maxUsers - d.userCount;
+      }
+    } catch {}
+  }
+
+  function updateStorageBar(used, max) {
+    const pct = Math.min(100, Math.round((used / max) * 100));
+    const bar = document.getElementById('storage-bar');
+    bar.style.width = `${pct}%`;
+    bar.className = 'storage-bar-fill' + (pct >= 90 ? ' full' : pct >= 70 ? ' warn' : '');
+    document.getElementById('storage-pct').textContent = `${pct}%`;
+    document.getElementById('storage-text').textContent = `${formatBytes(used)} used of ${formatBytes(max)}`;
+  }
+
+  // ── ADMIN ──
+  async function loadAdminUsers() {
+    try {
+      const r = await fetch(`${API}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` } });
+      const d = await r.json();
+      const el = document.getElementById('admin-users-list');
+      el.innerHTML = d.users.map(u => `
+        <div class="user-row">
+          <div class="user-row-left">
+            <div class="user-avatar-lg">${u.username[0].toUpperCase()}</div>
+            <div>
+              <div class="user-name">${esc(u.username)} ${u.is_admin ? '<span class="admin-chip">Admin</span>' : ''}</div>
+              <div class="user-since">Joined ${formatDate(u.created_at)}</div>
+            </div>
+          </div>
+          ${u.id !== currentUser.id ? `<button class="btn btn-danger" onclick="deleteUser(${u.id})">Remove User</button>` : '<span style="font-size:10px;color:var(--muted)">You</span>'}
+        </div>
+      `).join('');
+    } catch { toast('Failed to load users', 'error'); }
+  }
+
+  async function deleteUser(id) {
+    if (!confirm('Remove this user and all their files?')) return;
+    try {
+      const r = await fetch(`${API}/api/admin/users/${id}`, {
+        method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
+      });
+      if (r.ok) { toast('User removed', 'success'); loadAdminUsers(); loadFiles(); loadStats(); }
+      else { const d = await r.json(); toast(d.error, 'error'); }
+    } catch { toast('Failed', 'error'); }
+  }
+
+  // ── TABS ──
+  function switchTab(tab) {
+    ['files','upload','admin'].forEach(t => {
+      document.getElementById(`section-${t}`).style.display = t === tab ? '' : 'none';
+      document.getElementById(`tab-${t}`)?.classList.toggle('active', t === tab);
+    });
+    activeTab = tab;
+    if (tab === 'admin') loadAdminUsers();
+  }
+
+  // ── HELPERS ──
+  function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function formatBytes(b) {
+    if (b < 1024) return `${b} B`;
+    if (b < 1048576) return `${(b/1024).toFixed(1)} KB`;
+    if (b < 1073741824) return `${(b/1048576).toFixed(1)} MB`;
+    return `${(b/1073741824).toFixed(2)} GB`;
+  }
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  }
+  function getFileEmoji(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    const map = {
+      pdf:'📄', doc:'📝', docx:'📝', xls:'📊', xlsx:'📊', ppt:'📋', pptx:'📋',
+      jpg:'🖼️', jpeg:'🖼️', png:'🖼️', gif:'🖼️', webp:'🖼️', svg:'🎨',
+      mp4:'🎬', mov:'🎬', avi:'🎬', mkv:'🎬', mp3:'🎵', wav:'🎵', flac:'🎵',
+      zip:'📦', rar:'📦', tar:'📦', gz:'📦',
+      js:'⚙️', ts:'⚙️', py:'🐍', html:'🌐', css:'🎨', json:'📋',
+      txt:'📃', md:'📃', csv:'📊',
+    };
+    return map[ext] || '📎';
+  }
+
+  function toast(msg, type='success') {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span> ${esc(msg)}`;
+    document.getElementById('toast-container').appendChild(el);
+    setTimeout(() => {
+      el.style.animation = 'toastOut 0.3s ease both';
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  }
+
+  // Enter key support
+  document.getElementById('login-password').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+  document.getElementById('login-username').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+  document.getElementById('reg-confirm').addEventListener('keydown', e => e.key === 'Enter' && doRegister());
+</script>
+</body>
+</html>
