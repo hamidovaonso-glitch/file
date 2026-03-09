@@ -1,880 +1,872 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Китобхони бехтарин</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg:       #080b0f;
-      --surface:  #0e1318;
-      --card:     #131920;
-      --border:   #1e2a35;
-      --border2:  #263545;
-      --accent:   #00d4ff;
-      --accent2:  #0099cc;
-      --danger:   #ff4455;
-      --success:  #00e5a0;
-      --warn:     #ffaa00;
-      --text:     #e8f0f7;
-      --muted:    #6b8199;
-      --muted2:   #3d5570;
-      --glow:     0 0 20px rgba(0,212,255,0.15);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'JetBrains Mono', monospace;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Китобхон</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#07090d;--surface:#0d1117;--card:#111820;--border:#1a2535;--border2:#243348;
+  --accent:#4ade80;--accent2:#22c55e;--blue:#38bdf8;--purple:#a78bfa;--orange:#fb923c;
+  --red:#f87171;--yellow:#fbbf24;--text:#e2eaf4;--muted:#5a7a9a;--muted2:#2d4a6a;
+  --glow:0 0 30px rgba(74,222,128,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(74,222,128,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,0.02) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none}
+#app{position:relative;z-index:1}
 
-    /* ── NOISE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
+/* AUTH */
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-box{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:44px 36px;box-shadow:0 0 80px rgba(0,0,0,0.6),var(--glow);animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 24px rgba(74,222,128,0.35)}
+.logo-text{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-1px}
+.logo-text span{color:var(--accent)}
+.auth-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.auth-sub{font-size:11px;color:var(--muted);margin-bottom:28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px}
+.field input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);outline:none;transition:.2s}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,222,128,0.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;transition:all .2s;letter-spacing:.2px}
+.btn-primary{background:var(--accent);color:#000;width:100%;margin-top:6px}
+.btn-primary:hover{background:#6ee899;transform:translateY(-1px);box-shadow:0 4px 20px rgba(74,222,128,0.3)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:12px}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+.btn-danger{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);font-size:11px;padding:6px 12px}
+.btn-danger:hover{background:rgba(248,113,113,0.2)}
+.btn-blue{background:rgba(56,189,248,0.12);color:var(--blue);border:1px solid rgba(56,189,248,0.25);font-size:11px;padding:6px 12px}
+.btn-blue:hover{background:rgba(56,189,248,0.2)}
+.btn-sm{padding:7px 13px;font-size:11px}
+.btn-green{background:rgba(74,222,128,0.12);color:var(--accent);border:1px solid rgba(74,222,128,0.25);font-size:11px;padding:6px 12px}
+.btn-green:hover{background:rgba(74,222,128,0.22)}
+.auth-switch{margin-top:18px;text-align:center;font-size:12px;color:var(--muted)}
+.auth-switch a{color:var(--accent);cursor:pointer}
+.alert{padding:10px 13px;border-radius:8px;font-size:12px;margin-bottom:14px;display:none}
+.alert.error{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+.alert.success{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--accent)}
+.alert.show{display:block;animation:fadeUp .3s ease both}
 
-    /* ── GRID BACKGROUND ── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background-image:
-        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
+/* TOPBAR */
+#main-app{display:none;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,13,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.topbar-logo{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;letter-spacing:-0.5px}
+.topbar-logo span{color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-badge{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+.avatar-sm{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);cursor:pointer}
+.avatar-placeholder{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;font-family:'Syne',sans-serif;border:2px solid var(--accent);cursor:pointer;flex-shrink:0}
+.admin-chip{font-size:9px;font-weight:600;background:rgba(251,191,36,0.15);color:var(--yellow);border:1px solid rgba(251,191,36,0.25);padding:2px 7px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
 
-    #app { position: relative; z-index: 1; }
+/* LAYOUT */
+.layout{max-width:1040px;margin:0 auto;padding:28px 20px;display:grid;gap:20px}
 
-    /* ── AUTH SCREEN ── */
-    #auth-screen {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .auth-box {
-      width: 100%; max-width: 420px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 48px 40px;
-      box-shadow: 0 0 60px rgba(0,0,0,0.5), var(--glow);
-      animation: fadeUp 0.5s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity:0; transform: translateY(20px); }
-      to   { opacity:1; transform: translateY(0); }
-    }
-    .logo {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 36px;
-    }
-    .logo-icon {
-      width: 42px; height: 42px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 0 20px rgba(0,212,255,0.3);
-    }
-    .logo-text {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-    .logo-text span { color: var(--accent); }
-    .auth-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 24px; font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .auth-sub {
-      font-size: 11px; color: var(--muted);
-      margin-bottom: 32px; letter-spacing: 0.3px;
-    }
-    .field { margin-bottom: 16px; }
-    .field label {
-      display: block;
-      font-size: 10px; font-weight: 500;
-      color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px;
-      margin-bottom: 8px;
-    }
-    .field input {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .field input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
-    }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
-      transition: all 0.2s; text-decoration: none; letter-spacing: 0.3px;
-    }
-    .btn-primary {
-      background: var(--accent); color: #000;
-      width: 100%; margin-top: 8px;
-    }
-    .btn-primary:hover { background: #33deff; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.3); }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-ghost {
-      background: transparent; color: var(--muted);
-      border: 1px solid var(--border); font-size: 12px;
-    }
-    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
-    .btn-danger { background: rgba(255,68,85,0.1); color: var(--danger); border: 1px solid rgba(255,68,85,0.2); font-size: 11px; padding: 6px 12px; }
-    .btn-danger:hover { background: rgba(255,68,85,0.2); }
-    .btn-sm { padding: 7px 14px; font-size: 11px; }
-    .auth-switch {
-      margin-top: 20px; text-align: center;
-      font-size: 12px; color: var(--muted);
-    }
-    .auth-switch a { color: var(--accent); cursor: pointer; text-decoration: none; }
-    .auth-switch a:hover { text-decoration: underline; }
-    .alert {
-      padding: 10px 14px; border-radius: 8px; font-size: 12px;
-      margin-bottom: 16px; display: none;
-    }
-    .alert.error { background: rgba(255,68,85,0.1); border: 1px solid rgba(255,68,85,0.3); color: var(--danger); }
-    .alert.success { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3); color: var(--success); }
-    .alert.show { display: block; animation: fadeUp 0.3s ease both; }
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);letter-spacing:.2px;white-space:nowrap}
+.tab.active{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.tab:hover:not(.active){color:var(--text)}
 
-    /* ── MAIN APP ── */
-    #main-app { display: none; min-height: 100vh; }
+/* STORAGE BAR */
+.storage-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;display:flex;align-items:center;gap:18px}
+.storage-info{flex:1}
+.storage-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px}
+.bar-track{height:5px;background:var(--card);border-radius:999px;overflow:hidden;margin-bottom:5px}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s ease;box-shadow:0 0 8px rgba(74,222,128,0.4)}
+.bar-fill.warn{background:linear-gradient(90deg,var(--yellow),#f59e0b)}
+.bar-fill.full{background:linear-gradient(90deg,var(--red),#dc2626)}
+.storage-text{font-size:11px;color:var(--muted)}
+.storage-pct{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--accent);min-width:60px;text-align:right}
 
-    /* ── TOPBAR ── */
-    .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(8,11,15,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 60px;
-    }
-    .topbar-logo {
-      display: flex; align-items: center; gap: 10px;
-      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
-    }
-    .topbar-logo .dot { color: var(--accent); }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
-    .user-badge {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 11px; color: var(--muted);
-    }
-    .user-badge .avatar {
-      width: 28px; height: 28px; border-radius: 6px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; color: #000;
-      font-family: 'Syne', sans-serif;
-    }
-    .admin-chip {
-      font-size: 9px; font-weight: 600;
-      background: rgba(255,170,0,0.15); color: var(--warn);
-      border: 1px solid rgba(255,170,0,0.25);
-      padding: 2px 7px; border-radius: 4px; letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+/* FILES */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.card-header{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.badge-count{font-size:10px;color:var(--muted);background:var(--card);padding:3px 8px;border-radius:4px}
+.file-row{display:grid;grid-template-columns:34px 1fr auto auto;align-items:center;gap:10px;padding:13px 20px;border-bottom:1px solid var(--border);transition:background .15s;animation:fadeUp .3s ease both}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:rgba(255,255,255,0.02)}
+.file-icon{width:34px;height:34px;border-radius:7px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px}
+.file-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.file-meta{font-size:10px;color:var(--muted)}
+.file-size{font-size:11px;color:var(--muted);white-space:nowrap;min-width:55px;text-align:right}
+.file-actions{display:flex;gap:5px}
+.btn-dl{background:rgba(56,189,248,0.08);color:var(--blue);border:1px solid rgba(56,189,248,0.2);font-size:11px;padding:5px 11px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s}
+.btn-dl:hover{background:rgba(56,189,248,0.16)}
+.empty-state{padding:50px 20px;text-align:center;color:var(--muted);font-size:12px}
+.empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
 
-    /* ── LAYOUT ── */
-    .layout {
-      max-width: 1000px; margin: 0 auto;
-      padding: 32px 24px;
-      display: grid; gap: 24px;
-    }
+/* UPLOAD */
+.upload-zone{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:38px;text-align:center;cursor:pointer;transition:all .3s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(74,222,128,0.03)}
+.upload-icon{font-size:32px;margin-bottom:10px}
+.upload-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px}
+.upload-sub{font-size:11px;color:var(--muted)}
+.progress-wrap{margin-top:14px;display:none}
+.prog-track{height:4px;background:var(--card);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .3s;box-shadow:0 0 8px rgba(74,222,128,0.5)}
+.prog-text{font-size:11px;color:var(--muted);margin-top:5px}
 
-    /* ── STORAGE BAR ── */
-    .storage-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-      display: flex; align-items: center; gap: 20px;
-    }
-    .storage-info { flex: 1; }
-    .storage-label {
-      font-size: 10px; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 1.5px;
-      margin-bottom: 8px;
-    }
-    .storage-bar-track {
-      height: 6px; background: var(--card);
-      border-radius: 999px; overflow: hidden;
-      margin-bottom: 6px;
-    }
-    .storage-bar-fill {
-      height: 100%; border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width 0.5s ease;
-      box-shadow: 0 0 8px rgba(0,212,255,0.4);
-    }
-    .storage-bar-fill.warn { background: linear-gradient(90deg, var(--warn), #ff8800); }
-    .storage-bar-fill.full { background: linear-gradient(90deg, var(--danger), #cc0011); }
-    .storage-text { font-size: 11px; color: var(--muted); }
-    .storage-pct {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px; font-weight: 800;
-      color: var(--accent); min-width: 70px; text-align: right;
-    }
+/* LEADERBOARD */
+.lb-controls{display:flex;gap:8px;margin-bottom:16px}
+.lb-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.lb-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.lb-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);transition:background .15s;animation:fadeUp .3s ease both}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:rgba(255,255,255,0.02)}
+.lb-rank{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;min-width:36px;text-align:center}
+.rank-1{color:var(--yellow)}
+.rank-2{color:var(--muted)}
+.rank-3{color:#cd7f32}
+.lb-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0}
+.lb-avatar-ph{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#000;font-family:'Syne',sans-serif;flex-shrink:0;border:2px solid var(--border)}
+.lb-info{flex:1}
+.lb-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px}
+.lb-pages{font-size:11px;color:var(--muted)}
+.lb-score{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);text-align:right;min-width:80px}
+.lb-score span{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-weight:400}
 
-    /* ── TABS ── */
-    .tabs {
-      display: flex; gap: 2px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px; padding: 4px;
-      width: fit-content;
-    }
-    .tab {
-      padding: 8px 18px; border-radius: 7px;
-      font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s; color: var(--muted);
-      letter-spacing: 0.3px;
-    }
-    .tab.active { background: var(--card); color: var(--text); border: 1px solid var(--border); }
-    .tab:hover:not(.active) { color: var(--text); }
+/* CHART */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.chart-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px}
+.chart-sub{font-size:10px;color:var(--muted);margin-bottom:16px}
+.chart-canvas-wrap{position:relative;height:260px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-    /* ── UPLOAD ZONE ── */
-    .upload-zone {
-      background: var(--surface);
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(0,212,255,0.04); }
-    .upload-icon { font-size: 36px; margin-bottom: 12px; }
-    .upload-title {
-      font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .upload-sub { font-size: 11px; color: var(--muted); }
-    #file-input { display: none; }
-    .upload-progress {
-      margin-top: 16px; display: none;
-    }
-    .progress-bar-track {
-      height: 4px; background: var(--card); border-radius: 999px; overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%; background: var(--accent);
-      border-radius: 999px; transition: width 0.3s;
-      box-shadow: 0 0 8px rgba(0,212,255,0.5);
-    }
-    .progress-text { font-size: 11px; color: var(--muted); margin-top: 6px; }
+/* ADMIN */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.stat-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--accent)}
+.section-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.badge-admin{font-size:9px;background:rgba(251,191,36,0.15);color:var(--yellow);border:1px solid rgba(251,191,36,0.25);padding:2px 7px;border-radius:4px;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
+.user-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--border);gap:10px}
+.user-row:last-child{border-bottom:none}
+.user-row-left{display:flex;align-items:center;gap:11px}
+.user-av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.user-av-ph{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;font-family:'Syne',sans-serif;border:2px solid var(--border)}
+.user-name{font-size:13px;font-weight:500}
+.user-since{font-size:10px;color:var(--muted);margin-top:2px}
+.user-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 
-    /* ── FILES LIST ── */
-    .files-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .files-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .files-header-title {
-      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-    }
-    .file-count {
-      font-size: 10px; color: var(--muted);
-      background: var(--card); padding: 3px 8px; border-radius: 4px;
-    }
-    .file-row {
-      display: grid;
-      grid-template-columns: 36px 1fr auto auto;
-      align-items: center; gap: 12px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-      animation: fadeUp 0.3s ease both;
-    }
-    .file-row:last-child { border-bottom: none; }
-    .file-row:hover { background: rgba(255,255,255,0.02); }
-    .file-icon {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: var(--card); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-    }
-    .file-info { overflow: hidden; }
-    .file-name {
-      font-size: 13px; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-    .file-meta { font-size: 10px; color: var(--muted); }
-    .file-size {
-      font-size: 11px; color: var(--muted); white-space: nowrap;
-      min-width: 60px; text-align: right;
-    }
-    .file-actions { display: flex; gap: 6px; }
-    .btn-download {
-      background: rgba(0,212,255,0.08); color: var(--accent);
-      border: 1px solid rgba(0,212,255,0.2); font-size: 11px;
-      padding: 6px 12px; border-radius: 6px; cursor: pointer;
-      font-family: 'JetBrains Mono', monospace; font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-download:hover { background: rgba(0,212,255,0.15); }
-    .empty-state {
-      padding: 60px 20px; text-align: center;
-      color: var(--muted); font-size: 12px;
-    }
-    .empty-state .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+/* Reading log form */
+.log-form{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
+.log-form-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:14px;color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}
+.form-group label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.form-group select,.form-group input[type=number],.form-group input[type=date],.form-group input[type=text]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);outline:none;transition:.2s}
+.form-group select:focus,.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(74,222,128,0.1)}
+.form-group select option{background:var(--card)}
+.log-history{max-height:220px;overflow-y:auto}
+.log-entry{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--border);font-size:11px;gap:10px;animation:fadeUp .2s ease both}
+.log-entry:last-child{border-bottom:none}
+.log-date{color:var(--muted);min-width:80px}
+.log-user{color:var(--blue);min-width:80px}
+.log-pages{color:var(--accent);font-weight:600;min-width:60px;text-align:right}
+.log-note{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-    /* ── ADMIN PANEL ── */
-    .admin-section { display: none; }
-    .section-title {
-      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
-      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
-    }
-    .section-title .badge {
-      font-size: 9px; background: rgba(255,170,0,0.15); color: var(--warn);
-      border: 1px solid rgba(255,170,0,0.25); padding: 2px 7px;
-      border-radius: 4px; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;
-    }
-    .user-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.3s ease both;
-    }
-    .user-row:last-child { border-bottom: none; }
-    .user-row-left { display: flex; align-items: center; gap: 12px; }
-    .user-avatar-lg {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent), #0066ff);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 700; color: #000;
-      font-family: 'Syne', sans-serif;
-    }
-    .user-name { font-size: 13px; font-weight: 500; }
-    .user-since { font-size: 10px; color: var(--muted); margin-top: 2px; }
-    .users-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-    }
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 18px 20px;
-    }
-    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
-    .stat-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--accent); }
+/* PROFILE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:360px;width:100%;animation:fadeUp .3s ease both}
+.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:20px}
+.avatar-upload-area{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:20px}
+.avatar-preview{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);box-shadow:0 0 20px rgba(74,222,128,0.3)}
+.avatar-preview-ph{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#000;font-family:'Syne',sans-serif;border:3px solid var(--accent)}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 
-    /* ── LOADING ── */
-    .spinner {
-      display: inline-block; width: 14px; height: 14px;
-      border: 2px solid rgba(0,212,255,0.2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+/* TOAST */
+#toast-container{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:7px}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-size:12px;display:flex;align-items:center;gap:9px;box-shadow:0 8px 30px rgba(0,0,0,0.4);animation:toastIn .3s ease both;max-width:300px}
+.toast.error{border-color:rgba(248,113,113,0.3)}
+.toast.success{border-color:rgba(74,222,128,0.3)}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(16px)}}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(74,222,128,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── TOAST ── */
-    #toast-container {
-      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .toast {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 16px;
-      font-size: 12px; display: flex; align-items: center; gap: 10px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      animation: toastIn 0.3s ease both;
-      max-width: 320px;
-    }
-    .toast.error { border-color: rgba(255,68,85,0.3); }
-    .toast.success { border-color: rgba(0,229,160,0.3); }
-    @keyframes toastIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
-    @keyframes toastOut { to { opacity:0; transform: translateX(20px); } }
-  </style>
+/* RESPONSIVE */
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr 1fr}
+  .storage-card{flex-direction:column;align-items:flex-start}
+  .storage-pct{align-self:flex-end}
+}
+</style>
 </head>
 <body>
-
 <div id="app">
-  <!-- AUTH SCREEN -->
-  <div id="auth-screen">
-    <div class="auth-box">
-      <div class="logo">
-        <div class="logo-icon">🔐</div>
-        <div class="logo-text">Китобхон<span></span></div>
-      </div>
 
-      <!-- LOGIN -->
-      <div id="login-form">
-        <div class="auth-title">С возвращением</div>
-        <div class="auth-sub">// Войдите в свой аккаунт</div>
-        <div class="alert error" id="login-error"></div>
-        <div class="field">
-          <label>Имя пользователя</label>
-          <input type="text" id="login-username" placeholder="ваш_логин" autocomplete="username" />
-        </div>
-        <div class="field">
-          <label>Пароль</label>
-          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
-        </div>
-        <button class="btn btn-primary" onclick="doLogin()">
-          <span>Войти</span>
-        </button>
-        <div class="auth-switch">Нет аккаунта? <a onclick="showRegister()">Создать</a></div>
-      </div>
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="logo">
+      <div class="logo-icon">📚</div>
+      <div class="logo-text">Китоб<span>хон</span></div>
+    </div>
+    <div id="login-form">
+      <div class="auth-title">С возвращением</div>
+      <div class="auth-sub">// Войдите в свой аккаунт</div>
+      <div class="alert error" id="login-error"></div>
+      <div class="field"><label>Логин</label><input type="text" id="login-username" placeholder="ваш_логин" autocomplete="username"/></div>
+      <div class="field"><label>Пароль</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"/></div>
+      <button class="btn btn-primary" onclick="doLogin()">Войти</button>
+      <div class="auth-switch">Нет аккаунта? <a onclick="showRegister()">Создать</a></div>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="auth-title">Создать аккаунт</div>
+      <div class="auth-sub">// Первый — администратор • Всего 7 мест</div>
+      <div class="alert error" id="register-error"></div>
+      <div class="field"><label>Логин</label><input type="text" id="reg-username" placeholder="придумайте_логин" autocomplete="username"/></div>
+      <div class="field"><label>Пароль</label><input type="password" id="reg-password" placeholder="мин. 6 символов" autocomplete="new-password"/></div>
+      <div class="field"><label>Повторите пароль</label><input type="password" id="reg-confirm" placeholder="повторите пароль" autocomplete="new-password"/></div>
+      <button class="btn btn-primary" onclick="doRegister()">Создать аккаунт</button>
+      <div class="auth-switch">Есть аккаунт? <a onclick="showLogin()">Войти</a></div>
+    </div>
+  </div>
+</div>
 
-      <!-- REGISTER -->
-      <div id="register-form" style="display:none">
-        <div class="auth-title">Создать аккаунт</div>
-        <div class="auth-sub">// Первый зарегистрированный — администратор • Всего 7 мест</div>
-        <div class="alert error" id="register-error"></div>
-        <div class="alert success" id="register-success"></div>
-        <div class="field">
-          <label>Имя пользователя</label>
-          <input type="text" id="reg-username" placeholder="придумайте_логин" autocomplete="username" />
-        </div>
-        <div class="field">
-          <label>Пароль</label>
-          <input type="password" id="reg-password" placeholder="мин. 6 символов" autocomplete="new-password" />
-        </div>
-        <div class="field">
-          <label>Подтвердите пароль</label>
-          <input type="password" id="reg-confirm" placeholder="повторите пароль" autocomplete="new-password" />
-        </div>
-        <button class="btn btn-primary" onclick="doRegister()">
-          <span>Создать аккаунт</span>
-        </button>
-        <div class="auth-switch">Уже есть аккаунт? <a onclick="showLogin()">Войти</a></div>
+<!-- MAIN APP -->
+<div id="main-app">
+  <div class="topbar">
+    <div class="topbar-logo">Китоб<span>хон</span></div>
+    <div class="topbar-right">
+      <div class="user-badge">
+        <div id="topbar-avatar-wrap" onclick="openProfileModal()" title="Изменить фото"></div>
+        <span id="topbar-username"></span>
+        <span class="admin-chip" id="admin-chip" style="display:none">Админ</span>
       </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Выйти</button>
     </div>
   </div>
 
-  <!-- MAIN APP -->
-  <div id="main-app">
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="topbar-logo">Vault<span class="dot">.</span>Drop</div>
-      <div class="topbar-right">
-        <div class="user-badge">
-          <div class="avatar" id="topbar-avatar">U</div>
-          <span id="topbar-username">user</span>
-          <span class="admin-chip" id="admin-chip" style="display:none">Админ</span>
+  <div class="layout">
+    <!-- Storage -->
+    <div class="storage-card">
+      <div class="storage-info">
+        <div class="storage-label">Хранилище файлов</div>
+        <div class="bar-track"><div class="bar-fill" id="storage-bar" style="width:0%"></div></div>
+        <div class="storage-text" id="storage-text">Загрузка...</div>
+      </div>
+      <div class="storage-pct" id="storage-pct">0%</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" id="tab-leaderboard" onclick="switchTab('leaderboard')">🏆 Рейтинг</div>
+      <div class="tab" id="tab-chart" onclick="switchTab('chart')">📈 График</div>
+      <div class="tab" id="tab-files" onclick="switchTab('files')">📁 Файлы</div>
+      <div class="tab" id="tab-upload" onclick="switchTab('upload')">⬆️ Загрузить</div>
+      <div class="tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">⚙️ Админ</div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="section-leaderboard">
+      <div class="lb-controls">
+        <button class="lb-btn active" id="lb-all-btn" onclick="switchLb('all')">За всё время</button>
+        <button class="lb-btn" id="lb-week-btn" onclick="switchLb('week')">За неделю</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Топ читателей</div>
+          <div class="badge-count" id="lb-count">0 участников</div>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="logout()">Выйти</button>
+        <div id="lb-list"><div class="empty-state"><div class="spinner"></div></div></div>
       </div>
     </div>
 
-    <div class="layout">
-      <!-- STORAGE BAR -->
-      <div class="storage-card">
-        <div class="storage-info">
-          <div class="storage-label">Использование хранилища</div>
-          <div class="storage-bar-track">
-            <div class="storage-bar-fill" id="storage-bar" style="width:0%"></div>
-          </div>
-          <div class="storage-text" id="storage-text">Calculating...</div>
-        </div>
-        <div class="storage-pct" id="storage-pct">0%</div>
+    <!-- CHART -->
+    <div id="section-chart" style="display:none">
+      <div class="chart-wrap">
+        <div class="chart-title">Прогресс чтения</div>
+        <div class="chart-sub">Накопленные страницы за последние 60 дней — каждый студент своим цветом</div>
+        <div class="chart-canvas-wrap"><canvas id="readingChart"></canvas></div>
+        <div class="chart-legend" id="chart-legend"></div>
       </div>
+    </div>
 
-      <!-- TABS -->
-      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-        <div class="tabs">
-          <div class="tab active" id="tab-files" onclick="switchTab('files')">Файлы</div>
-          <div class="tab" id="tab-upload" onclick="switchTab('upload')">Загрузить</div>
-          <div class="tab admin-tab" id="tab-admin" onclick="switchTab('admin')" style="display:none">Админ</div>
+    <!-- FILES -->
+    <div id="section-files" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Все файлы</div>
+          <div class="badge-count" id="file-count">0 файлов</div>
         </div>
+        <div id="files-list"><div class="empty-state"><div class="empty-icon">📭</div><div>Файлов пока нет</div></div></div>
       </div>
+    </div>
 
-      <!-- FILES TAB -->
-      <div id="section-files">
-        <div class="files-card">
-          <div class="files-header">
-            <div class="files-header-title">Все файлы</div>
-            <div class="file-count" id="file-count">0 files</div>
-          </div>
-          <div id="files-list">
-            <div class="empty-state">
-              <div class="empty-icon">📁</div>
-              <div>No files uploaded yet</div>
-            </div>
-          </div>
+    <!-- UPLOAD -->
+    <div id="section-upload" style="display:none">
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+        <input type="file" id="file-input" multiple onchange="handleFiles(this.files)" style="display:none"/>
+        <div class="upload-icon">⬆️</div>
+        <div class="upload-title">Перетащите файлы или нажмите для выбора</div>
+        <div class="upload-sub">Любой тип файлов • Ограничение: оставшееся место</div>
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+          <div class="prog-text" id="prog-text">Загрузка...</div>
         </div>
       </div>
+    </div>
 
-      <!-- UPLOAD TAB -->
-      <div id="section-upload" style="display:none">
-        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
-          <input type="file" id="file-input" multiple onchange="handleFiles(this.files)" />
-          <div class="upload-icon">⬆️</div>
-          <div class="upload-title">Перетащите файлы сюда или нажмите для выбора</div>
-          <div class="upload-sub">Любой тип файлов • Размер ограничен оставшимся местом</div>
-          <div class="upload-progress" id="upload-progress">
-            <div class="progress-bar-track">
-              <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
-            </div>
-            <div class="progress-text" id="progress-text">Uploading...</div>
+    <!-- ADMIN -->
+    <div id="section-admin" style="display:none">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-label">Пользователей</div><div class="stat-value" id="a-users">–</div></div>
+        <div class="stat-card"><div class="stat-label">Файлов</div><div class="stat-value" id="a-files">–</div></div>
+        <div class="stat-card"><div class="stat-label">Свободных мест</div><div class="stat-value" id="a-slots">–</div></div>
+        <div class="stat-card"><div class="stat-label">Всего страниц</div><div class="stat-value" id="a-pages">–</div></div>
+      </div>
+
+      <!-- Reading log form -->
+      <div class="section-title">Записать страницы <span class="badge-admin">АДМИН</span></div>
+      <div class="log-form">
+        <div class="log-form-title">➕ Добавить запись чтения</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Студент</label>
+            <select id="log-user-select"><option value="">Выберите...</option></select>
           </div>
+          <div class="form-group">
+            <label>Страниц</label>
+            <input type="number" id="log-pages" min="1" max="9999" placeholder="например 25"/>
+          </div>
+          <div class="form-group">
+            <label>Дата</label>
+            <input type="date" id="log-date"/>
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-green" onclick="addReadingLog()" style="width:100%">Добавить</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:10px">
+          <label>Заметка (необязательно)</label>
+          <input type="text" id="log-note" placeholder="Например: Глава 3"/>
         </div>
       </div>
 
-      <!-- ADMIN TAB -->
-      <div id="section-admin" style="display:none">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Всего пользователей</div>
-            <div class="stat-value" id="admin-users-count">–</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Всего файлов</div>
-            <div class="stat-value" id="admin-files-count">–</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Свободных мест</div>
-            <div class="stat-value" id="admin-slots-left">–</div>
-          </div>
-        </div>
+      <!-- Log history -->
+      <div class="section-title" style="margin-bottom:10px">История записей</div>
+      <div class="card" style="margin-bottom:20px">
+        <div id="log-history-list"><div class="empty-state"><div class="spinner"></div></div></div>
+      </div>
 
-        <div class="section-title">
-          Пользователи <span class="badge">АДМИН</span>
-        </div>
-        <div class="users-card">
-          <div id="admin-users-list">
-            <div class="empty-state"><div class="spinner"></div></div>
-          </div>
-        </div>
+      <!-- Users -->
+      <div class="section-title">Пользователи <span class="badge-admin">АДМИН</span></div>
+      <div class="card">
+        <div id="admin-users-list"><div class="empty-state"><div class="spinner"></div></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal">
+    <div class="modal-title">👤 Мой профиль</div>
+    <div class="avatar-upload-area">
+      <div id="modal-avatar-preview"></div>
+      <div style="font-size:12px;color:var(--muted);text-align:center">Нажмите, чтобы загрузить фото профиля<br/><span style="font-size:10px">JPG, PNG, GIF • Макс. 5МБ</span></div>
+      <input type="file" id="avatar-file-input" accept="image/*" onchange="uploadAvatar(this.files[0])" style="display:none"/>
+      <button class="btn btn-blue btn-sm" onclick="document.getElementById('avatar-file-input').click()">📷 Выбрать фото</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="closeProfileModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 
 <script>
-  const API = '';
-  let token = localStorage.getItem('vd_token');
-  let currentUser = JSON.parse(localStorage.getItem('vd_user') || 'null');
-  let activeTab = 'files';
+const API = '';
+let token = localStorage.getItem('kb_token');
+let currentUser = JSON.parse(localStorage.getItem('kb_user') || 'null');
+let activeTab = 'leaderboard';
+let lbMode = 'all';
+let chartInstance = null;
+const COLORS = ['#4ade80','#38bdf8','#a78bfa','#fb923c','#f87171','#fbbf24','#34d399'];
 
-  // ── INIT ──
-  if (token && currentUser) {
-    showApp();
+if (token && currentUser) showApp();
+
+// ── AUTH ──────────────────────────────────────────────────────────
+function showRegister(){ document.getElementById('login-form').style.display='none'; document.getElementById('register-form').style.display=''; }
+function showLogin(){ document.getElementById('register-form').style.display='none'; document.getElementById('login-form').style.display=''; }
+
+async function doLogin(){
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.classList.remove('show');
+  if(!username||!password){showErr(errEl,'Заполните все поля');return;}
+  try{
+    const r = await fetch(`${API}/api/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const d = await r.json();
+    if(!r.ok){showErr(errEl,d.error);return;}
+    saveSession(d); showApp();
+  }catch{showErr(errEl,'Ошибка подключения. Сервер запущен?');}
+}
+
+async function doRegister(){
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  const errEl = document.getElementById('register-error');
+  errEl.classList.remove('show');
+  if(!username||!password){showErr(errEl,'Заполните все поля');return;}
+  if(password!==confirm){showErr(errEl,'Пароли не совпадают');return;}
+  if(password.length<6){showErr(errEl,'Пароль: минимум 6 символов');return;}
+  try{
+    const r = await fetch(`${API}/api/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const d = await r.json();
+    if(!r.ok){showErr(errEl,d.error);return;}
+    saveSession(d); showApp();
+  }catch{showErr(errEl,'Ошибка подключения.');}
+}
+
+function saveSession(data){
+  token=data.token; currentUser={username:data.username,is_admin:data.is_admin,avatar:data.avatar||null};
+  localStorage.setItem('kb_token',token); localStorage.setItem('kb_user',JSON.stringify(currentUser));
+}
+
+function logout(){
+  localStorage.removeItem('kb_token'); localStorage.removeItem('kb_user');
+  token=null; currentUser=null;
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  showLogin();
+}
+
+function showApp(){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  document.getElementById('topbar-username').textContent=currentUser.username;
+  renderTopbarAvatar();
+  if(currentUser.is_admin){
+    document.getElementById('admin-chip').style.display='';
+    document.getElementById('tab-admin').style.display='';
   }
+  loadLeaderboard(); loadStats();
+}
 
-  // ── AUTH ──
-  function showRegister() {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = '';
+// ── AVATAR ────────────────────────────────────────────────────────
+function renderTopbarAvatar(){
+  const wrap = document.getElementById('topbar-avatar-wrap');
+  if(currentUser.avatar){
+    wrap.innerHTML=`<img src="/avatars/${currentUser.avatar}" class="avatar-sm" onerror="this.style.display='none'"/>`;
+  } else {
+    wrap.innerHTML=`<div class="avatar-placeholder">${currentUser.username[0].toUpperCase()}</div>`;
   }
-  function showLogin() {
-    document.getElementById('register-form').style.display = 'none';
-    document.getElementById('login-form').style.display = '';
+}
+
+function openProfileModal(){
+  const preview = document.getElementById('modal-avatar-preview');
+  if(currentUser.avatar){
+    preview.innerHTML=`<img src="/avatars/${currentUser.avatar}" class="avatar-preview" onerror="this.outerHTML='<div class=avatar-preview-ph>'+currentUser.username[0].toUpperCase()+'</div>'"/>`;
+  } else {
+    preview.innerHTML=`<div class="avatar-preview-ph">${currentUser.username[0].toUpperCase()}</div>`;
   }
+  document.getElementById('profile-modal').classList.add('show');
+}
+function closeProfileModal(){ document.getElementById('profile-modal').classList.remove('show'); }
 
-  async function doLogin() {
-    const username = document.getElementById('login-username').value.trim();
-    const password = document.getElementById('login-password').value;
-    const errEl = document.getElementById('login-error');
-    errEl.classList.remove('show');
-    if (!username || !password) { showErr(errEl, 'Заполните все поля'); return; }
+async function uploadAvatar(file){
+  if(!file)return;
+  const fd=new FormData(); fd.append('avatar',file);
+  try{
+    const r=await fetch(`${API}/api/avatar`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:fd});
+    const d=await r.json();
+    if(!r.ok){toast(d.error,'error');return;}
+    currentUser.avatar=d.avatar;
+    localStorage.setItem('kb_user',JSON.stringify(currentUser));
+    renderTopbarAvatar(); openProfileModal();
+    toast('Фото профиля обновлено!','success');
+    loadLeaderboard();
+  }catch{toast('Ошибка загрузки фото','error');}
+}
 
-    try {
-      const r = await fetch(`${API}/api/login`, {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({username, password})
-      });
-      const d = await r.json();
-      if (!r.ok) { showErr(errEl, d.error); return; }
-      saveSession(d);
-      showApp();
-    } catch { showErr(errEl, 'Ошибка подключения. Сервер запущен?'); }
-  }
+// ── TABS ─────────────────────────────────────────────────────────
+function switchTab(tab){
+  ['leaderboard','chart','files','upload','admin'].forEach(t=>{
+    const s=document.getElementById(`section-${t}`);
+    const tb=document.getElementById(`tab-${t}`);
+    if(s) s.style.display=t===tab?'':'none';
+    if(tb) tb.classList.toggle('active',t===tab);
+  });
+  activeTab=tab;
+  if(tab==='chart') loadChart();
+  if(tab==='files') loadFiles();
+  if(tab==='admin'){ loadAdminUsers(); loadAdminLogs(); loadStats(); }
+}
 
-  async function doRegister() {
-    const username = document.getElementById('reg-username').value.trim();
-    const password = document.getElementById('reg-password').value;
-    const confirm  = document.getElementById('reg-confirm').value;
-    const errEl    = document.getElementById('register-error');
-    const sucEl    = document.getElementById('register-success');
-    errEl.classList.remove('show'); sucEl.classList.remove('show');
+// ── LEADERBOARD ───────────────────────────────────────────────────
+async function loadLeaderboard(){
+  try{
+    const r=await fetch(`${API}/api/leaderboard`,{headers:{Authorization:`Bearer ${token}`}});
+    if(r.status===401){logout();return;}
+    const d=await r.json();
+    renderLeaderboard(d.leaderboard);
+  }catch{toast('Не удалось загрузить рейтинг','error');}
+}
 
-    if (!username || !password) { showErr(errEl, 'Заполните все поля'); return; }
-    if (password !== confirm) { showErr(errEl, 'Пароли не совпадают'); return; }
-    if (password.length < 6) { showErr(errEl, 'Пароль должен содержать не менее 6 символов'); return; }
+function switchLb(mode){
+  lbMode=mode;
+  document.getElementById('lb-all-btn').classList.toggle('active',mode==='all');
+  document.getElementById('lb-week-btn').classList.toggle('active',mode==='week');
+  loadLeaderboard();
+}
 
-    try {
-      const r = await fetch(`${API}/api/register`, {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({username, password})
-      });
-      const d = await r.json();
-      if (!r.ok) { showErr(errEl, d.error); return; }
-      saveSession(d);
-      showApp();
-    } catch { showErr(errEl, 'Ошибка подключения. Сервер запущен?'); }
-  }
-
-  function saveSession(data) {
-    token = data.token;
-    currentUser = {username: data.username, is_admin: data.is_admin};
-    localStorage.setItem('vd_token', token);
-    localStorage.setItem('vd_user', JSON.stringify(currentUser));
-  }
-
-  function logout() {
-    localStorage.removeItem('vd_token');
-    localStorage.removeItem('vd_user');
-    token = null; currentUser = null;
-    document.getElementById('main-app').style.display = 'none';
-    document.getElementById('auth-screen').style.display = 'flex';
-    showLogin();
-  }
-
-  function showApp() {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    document.getElementById('topbar-username').textContent = currentUser.username;
-    document.getElementById('topbar-avatar').textContent = currentUser.username[0].toUpperCase();
-    if (currentUser.is_admin) {
-      document.getElementById('admin-chip').style.display = '';
-      document.getElementById('tab-admin').style.display = '';
-    }
-    loadFiles();
-    loadStats();
-  }
-
-  // ── FILES ──
-  async function loadFiles() {
-    try {
-      const r = await fetch(`${API}/api/files`, { headers: { Authorization: `Bearer ${token}` } });
-      if (r.status === 401) { logout(); return; }
-      const d = await r.json();
-      renderFiles(d.files);
-      updateStorageBar(d.usedBytes, d.maxBytes);
-    } catch { toast('Не удалось загрузить файлы', 'error'); }
-  }
-
-  function renderFiles(files) {
-    const el = document.getElementById('files-list');
-    document.getElementById('file-count').textContent = `${files.length} файл${files.length === 1 ? '' : files.length >= 2 && files.length <= 4 ? 'а' : 'ов'}`;
-    if (!files.length) {
-      el.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>Файлов пока нет — загрузите что-нибудь!</div></div>`;
-      return;
-    }
-    el.innerHTML = files.map(f => `
-      <div class="file-row" id="file-${f.id}">
-        <div class="file-icon">${getFileEmoji(f.original_name)}</div>
-        <div class="file-info">
-          <div class="file-name" title="${esc(f.original_name)}">${esc(f.original_name)}</div>
-          <div class="file-meta">от ${esc(f.uploaded_by_username)} · ${formatDate(f.created_at)}</div>
-        </div>
-        <div class="file-size">${formatBytes(f.size)}</div>
-        <div class="file-actions">
-          <button class="btn-download" onclick="downloadFile(${f.id}, '${esc(f.original_name)}')">↓ Скачать</button>
-          ${currentUser.is_admin ? `<button class="btn btn-danger" onclick="deleteFile(${f.id})">✕</button>` : ''}
-        </div>
+function renderLeaderboard(data){
+  const sorted=[...data].sort((a,b)=>lbMode==='week'?b.weekly_pages-a.weekly_pages:b.total_pages-a.total_pages);
+  document.getElementById('lb-count').textContent=`${sorted.length} участник${sorted.length===1?'':sorted.length>=2&&sorted.length<=4?'а':'ов'}`;
+  const el=document.getElementById('lb-list');
+  if(!sorted.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📚</div><div>Нет данных</div></div>`;return;}
+  el.innerHTML=sorted.map((u,i)=>{
+    const pages=lbMode==='week'?u.weekly_pages:u.total_pages;
+    const rank=i+1;
+    const rankClass=rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
+    const rankEmoji=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const avatarEl=u.avatar_filename
+      ?`<img src="/avatars/${u.avatar_filename}" class="lb-avatar" onerror="this.outerHTML='<div class=lb-avatar-ph style=background:${COLORS[i%COLORS.length]}>${u.username[0].toUpperCase()}</div>'">`
+      :`<div class="lb-avatar-ph" style="background:${COLORS[i%COLORS.length]}">${u.username[0].toUpperCase()}</div>`;
+    return `<div class="lb-row">
+      <div class="lb-rank ${rankClass}">${rankEmoji}</div>
+      ${avatarEl}
+      <div class="lb-info">
+        <div class="lb-name">${esc(u.username)}</div>
+        <div class="lb-pages">${lbMode==='week'?'за эту неделю':'за всё время'}</div>
       </div>
-    `).join('');
-  }
+      <div class="lb-score">${pages.toLocaleString('ru')}<br/><span>стр.</span></div>
+    </div>`;
+  }).join('');
+}
 
-  async function downloadFile(id, name) {
-    const a = document.createElement('a');
-    a.href = `${API}/api/download/${id}`;
-    a.download = name;
-    a.style.display = 'none';
+// ── CHART ─────────────────────────────────────────────────────────
+async function loadChart(){
+  try{
+    const r=await fetch(`${API}/api/chart`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json();
+    renderChart(d.dates, d.series);
+  }catch{toast('Не удалось загрузить график','error');}
+}
 
-    const headers = { Authorization: `Bearer ${token}` };
-    try {
-      const r = await fetch(a.href, { headers });
-      if (!r.ok) { toast('Ошибка скачивания', 'error'); return; }
-      const blob = await r.blob();
-      const url = URL.createObjectURL(blob);
-      a.href = url; document.body.appendChild(a); a.click();
-      document.body.removeChild(a); URL.revokeObjectURL(url);
-    } catch { toast('Ошибка скачивания', 'error'); }
-  }
+function renderChart(dates, series){
+  const ctx=document.getElementById('readingChart').getContext('2d');
+  if(chartInstance){chartInstance.destroy();}
 
-  async function deleteFile(id) {
-    if (!confirm('Удалить этот файл?')) return;
-    try {
-      const r = await fetch(`${API}/api/files/${id}`, {
-        method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
-      });
-      if (r.ok) { toast('Файл удалён', 'success'); loadFiles(); loadStats(); }
-      else { const d = await r.json(); toast(d.error, 'error'); }
-    } catch { toast('Не удалось удалить', 'error'); }
-  }
-
-  // ── UPLOAD ──
-  const zone = document.getElementById('upload-zone');
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
-  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
-
-  async function handleFiles(files) {
-    if (!files.length) return;
-    const progressEl = document.getElementById('upload-progress');
-    const fillEl     = document.getElementById('progress-fill');
-    const textEl     = document.getElementById('progress-text');
-    progressEl.style.display = 'block';
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      textEl.textContent = `Загрузка ${i+1}/${files.length}: ${file.name}`;
-      fillEl.style.width = `${((i) / files.length) * 100}%`;
-      const fd = new FormData();
-      fd.append('file', file);
-      try {
-        const r = await fetch(`${API}/api/upload`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: fd
-        });
-        const d = await r.json();
-        if (!r.ok) { toast(d.error, 'error'); }
-        else { toast(`Загружено: ${file.name}`, 'success'); }
-      } catch { toast(`Ошибка: ${file.name}`, 'error'); }
+  // Show every 7th date label
+  const labels=dates.map((d,i)=>{
+    if(i%7===0||i===dates.length-1){
+      const dt=new Date(d);
+      return dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
     }
+    return '';
+  });
 
-    fillEl.style.width = '100%';
-    textEl.textContent = 'Готово!';
-    setTimeout(() => { progressEl.style.display = 'none'; fillEl.style.width = '0%'; }, 1500);
-    document.getElementById('file-input').value = '';
-    loadFiles();
-    loadStats();
-  }
+  const datasets=series.map((s,i)=>({
+    label:s.username,
+    data:s.data,
+    borderColor:COLORS[i%COLORS.length],
+    backgroundColor:`${COLORS[i%COLORS.length]}18`,
+    borderWidth:2.5,
+    pointRadius:3,
+    pointHoverRadius:6,
+    pointBackgroundColor:COLORS[i%COLORS.length],
+    tension:0.4,
+    fill:false,
+  }));
 
-  // ── STATS / STORAGE ──
-  async function loadStats() {
-    try {
-      const r = await fetch(`${API}/api/stats`, { headers: { Authorization: `Bearer ${token}` } });
-      const d = await r.json();
-      updateStorageBar(d.usedBytes, d.maxBytes);
-      if (currentUser.is_admin) {
-        document.getElementById('admin-users-count').textContent = d.userCount;
-        document.getElementById('admin-files-count').textContent = d.fileCount;
-        document.getElementById('admin-slots-left').textContent = d.maxUsers - d.userCount;
+  chartInstance=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0d1117',borderColor:'#1a2535',borderWidth:1,
+          titleColor:'#e2eaf4',bodyColor:'#5a7a9a',
+          callbacks:{
+            title:items=>{
+              const idx=items[0].dataIndex;
+              return new Date(dates[idx]).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+            },
+            label:item=>`${item.dataset.label}: ${item.raw.toLocaleString('ru')} стр.`
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{color:'#1a2535',drawBorder:false},
+          ticks:{color:'#5a7a9a',font:{family:"'JetBrains Mono'",size:10}},
+        },
+        y:{
+          grid:{color:'#1a2535',drawBorder:false},
+          ticks:{color:'#5a7a9a',font:{family:"'JetBrains Mono'",size:10},callback:v=>v.toLocaleString('ru')+' стр.'},
+          beginAtZero:true
+        }
       }
-    } catch {}
-  }
+    }
+  });
 
-  function updateStorageBar(used, max) {
-    const pct = Math.min(100, Math.round((used / max) * 100));
-    const bar = document.getElementById('storage-bar');
-    bar.style.width = `${pct}%`;
-    bar.className = 'storage-bar-fill' + (pct >= 90 ? ' full' : pct >= 70 ? ' warn' : '');
-    document.getElementById('storage-pct').textContent = `${pct}%`;
-    document.getElementById('storage-text').textContent = `${formatBytes(used)} использовано из ${formatBytes(max)}`;
-  }
+  // Custom legend
+  const legendEl=document.getElementById('chart-legend');
+  legendEl.innerHTML=series.map((s,i)=>`
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${COLORS[i%COLORS.length]}"></div>
+      ${esc(s.username)}
+    </div>`).join('');
+}
 
-  // ── ADMIN ──
-  async function loadAdminUsers() {
-    try {
-      const r = await fetch(`${API}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` } });
-      const d = await r.json();
-      const el = document.getElementById('admin-users-list');
-      el.innerHTML = d.users.map(u => `
-        <div class="user-row">
-          <div class="user-row-left">
-            <div class="user-avatar-lg">${u.username[0].toUpperCase()}</div>
-            <div>
-              <div class="user-name">${esc(u.username)} ${u.is_admin ? '<span class="admin-chip">Admin</span>' : ''}</div>
-              <div class="user-since">Зарегистрирован ${formatDate(u.created_at)}</div>
-            </div>
+// ── FILES ─────────────────────────────────────────────────────────
+async function loadFiles(){
+  try{
+    const r=await fetch(`${API}/api/files`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json();
+    renderFiles(d.files);
+    updateStorageBar(d.usedBytes,d.maxBytes);
+  }catch{toast('Не удалось загрузить файлы','error');}
+}
+
+function renderFiles(files){
+  const cnt=files.length;
+  document.getElementById('file-count').textContent=`${cnt} файл${cnt===1?'':cnt>=2&&cnt<=4?'а':'ов'}`;
+  const el=document.getElementById('files-list');
+  if(!files.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div>Файлов пока нет — загрузите что-нибудь!</div></div>`;return;}
+  el.innerHTML=files.map(f=>`
+    <div class="file-row">
+      <div class="file-icon">${getFileEmoji(f.original_name)}</div>
+      <div><div class="file-name" title="${esc(f.original_name)}">${esc(f.original_name)}</div><div class="file-meta">от ${esc(f.uploaded_by_username)} · ${formatDate(f.created_at)}</div></div>
+      <div class="file-size">${formatBytes(f.size)}</div>
+      <div class="file-actions">
+        <button class="btn-dl" onclick="downloadFile(${f.id},'${esc(f.original_name)}')">↓ Скачать</button>
+        ${currentUser.is_admin?`<button class="btn btn-danger" onclick="deleteFile(${f.id})">✕</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+async function downloadFile(id,name){
+  try{
+    const r=await fetch(`${API}/api/download/${id}`,{headers:{Authorization:`Bearer ${token}`}});
+    if(!r.ok){toast('Ошибка скачивания','error');return;}
+    const blob=await r.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=name; a.style.display='none';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }catch{toast('Ошибка скачивания','error');}
+}
+
+async function deleteFile(id){
+  if(!confirm('Удалить этот файл?'))return;
+  try{
+    const r=await fetch(`${API}/api/files/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    if(r.ok){toast('Файл удалён','success');loadFiles();loadStats();}
+    else{const d=await r.json();toast(d.error,'error');}
+  }catch{toast('Не удалось удалить','error');}
+}
+
+// ── UPLOAD ────────────────────────────────────────────────────────
+const zone=document.getElementById('upload-zone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+
+async function handleFiles(files){
+  if(!files.length)return;
+  const pw=document.getElementById('progress-wrap');
+  const pf=document.getElementById('prog-fill');
+  const pt=document.getElementById('prog-text');
+  pw.style.display='block';
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    pt.textContent=`Загрузка ${i+1}/${files.length}: ${file.name}`;
+    pf.style.width=`${(i/files.length)*100}%`;
+    const fd=new FormData(); fd.append('file',file);
+    try{
+      const r=await fetch(`${API}/api/upload`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:fd});
+      const d=await r.json();
+      if(!r.ok) toast(d.error,'error');
+      else toast(`Загружено: ${file.name}`,'success');
+    }catch{toast(`Ошибка: ${file.name}`,'error');}
+  }
+  pf.style.width='100%'; pt.textContent='Готово!';
+  setTimeout(()=>{pw.style.display='none';pf.style.width='0%';},1500);
+  document.getElementById('file-input').value='';
+  loadFiles(); loadStats();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────
+async function loadStats(){
+  try{
+    const r=await fetch(`${API}/api/stats`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json();
+    updateStorageBar(d.usedBytes,d.maxBytes);
+    if(currentUser.is_admin){
+      document.getElementById('a-users').textContent=d.userCount;
+      document.getElementById('a-files').textContent=d.fileCount;
+      document.getElementById('a-slots').textContent=d.maxUsers-d.userCount;
+      document.getElementById('a-pages').textContent=d.totalPages.toLocaleString('ru');
+    }
+  }catch{}
+}
+
+function updateStorageBar(used,max){
+  const pct=Math.min(100,Math.round((used/max)*100));
+  const bar=document.getElementById('storage-bar');
+  bar.style.width=`${pct}%`;
+  bar.className='bar-fill'+(pct>=90?' full':pct>=70?' warn':'');
+  document.getElementById('storage-pct').textContent=`${pct}%`;
+  document.getElementById('storage-text').textContent=`${formatBytes(used)} из ${formatBytes(max)}`;
+}
+
+// ── ADMIN: READING LOGS ───────────────────────────────────────────
+async function loadAdminUsers(){
+  try{
+    const r=await fetch(`${API}/api/admin/users`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json();
+    // populate select
+    const sel=document.getElementById('log-user-select');
+    const nonAdmins=d.users.filter(u=>!u.is_admin);
+    sel.innerHTML='<option value="">Выберите студента...</option>'+nonAdmins.map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
+    // render users table
+    const el=document.getElementById('admin-users-list');
+    el.innerHTML=d.users.map(u=>{
+      const av=u.avatar_filename
+        ?`<img src="/avatars/${u.avatar_filename}" class="user-av" onerror="this.style.display='none'">`
+        :`<div class="user-av-ph" style="background:${COLORS[u.id%COLORS.length]}">${u.username[0].toUpperCase()}</div>`;
+      return `<div class="user-row">
+        <div class="user-row-left">
+          ${av}
+          <div>
+            <div class="user-name">${esc(u.username)} ${u.is_admin?'<span class="admin-chip">Админ</span>':''}</div>
+            <div class="user-since">Зарегистрирован ${formatDate(u.created_at)}</div>
           </div>
-          ${u.id !== currentUser.id ? `<button class="btn btn-danger" onclick="deleteUser(${u.id})">Удалить</button>` : '<span style="font-size:10px;color:var(--muted)">Вы</span>'}
         </div>
-      `).join('');
-    } catch { toast('Не удалось загрузить пользователей', 'error'); }
-  }
+        <div class="user-actions">
+          ${!u.is_admin?`<button class="btn btn-blue btn-sm" onclick="loadUserLogs(${u.id},'${esc(u.username)}')">📖 Записи</button>`:''}
+          ${u.id!==currentUser.id?`<button class="btn btn-danger" onclick="deleteUser(${u.id})">Удалить</button>`:'<span style="font-size:10px;color:var(--muted)">Вы</span>'}
+        </div>
+      </div>`;
+    }).join('');
+  }catch{toast('Не удалось загрузить пользователей','error');}
+}
 
-  async function deleteUser(id) {
-    if (!confirm('Удалить этого пользователя и все его файлы?')) return;
-    try {
-      const r = await fetch(`${API}/api/admin/users/${id}`, {
-        method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
-      });
-      if (r.ok) { toast('Пользователь удалён', 'success'); loadAdminUsers(); loadFiles(); loadStats(); }
-      else { const d = await r.json(); toast(d.error, 'error'); }
-    } catch { toast('Ошибка', 'error'); }
-  }
+async function loadAdminLogs(){
+  try{
+    // Get all users to fetch all logs
+    const ru=await fetch(`${API}/api/admin/users`,{headers:{Authorization:`Bearer ${token}`}});
+    const du=await ru.json();
+    const nonAdmins=du.users.filter(u=>!u.is_admin);
+    let allLogs=[];
+    for(const u of nonAdmins){
+      const rl=await fetch(`${API}/api/admin/reading/${u.id}`,{headers:{Authorization:`Bearer ${token}`}});
+      const dl=await rl.json();
+      allLogs=[...allLogs,...dl.logs.map(l=>({...l,username:u.username}))];
+    }
+    allLogs.sort((a,b)=>new Date(b.log_date)-new Date(a.log_date));
+    renderLogHistory(allLogs);
+  }catch{}
+}
 
-  // ── TABS ──
-  function switchTab(tab) {
-    ['files','upload','admin'].forEach(t => {
-      document.getElementById(`section-${t}`).style.display = t === tab ? '' : 'none';
-      document.getElementById(`tab-${t}`)?.classList.toggle('active', t === tab);
-    });
-    activeTab = tab;
-    if (tab === 'admin') loadAdminUsers();
-  }
+async function loadUserLogs(userId, username){
+  try{
+    const r=await fetch(`${API}/api/admin/reading/${userId}`,{headers:{Authorization:`Bearer ${token}`}});
+    const d=await r.json();
+    const logs=d.logs.map(l=>({...l,username}));
+    renderLogHistory(logs);
+    toast(`Показаны записи: ${username}`,'success');
+    // scroll to log history
+    document.getElementById('log-history-list').scrollIntoView({behavior:'smooth'});
+  }catch{toast('Не удалось загрузить записи','error');}
+}
 
-  // ── HELPERS ──
-  function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
-  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function formatBytes(b) {
-    if (b < 1024) return `${b} B`;
-    if (b < 1048576) return `${(b/1024).toFixed(1)} KB`;
-    if (b < 1073741824) return `${(b/1048576).toFixed(1)} MB`;
-    return `${(b/1073741824).toFixed(2)} GB`;
-  }
-  function formatDate(d) {
-    return new Date(d).toLocaleDateString('ru-RU', {month:'short', day:'numeric', year:'numeric'});
-  }
-  function getFileEmoji(name) {
-    const ext = name.split('.').pop().toLowerCase();
-    const map = {
-      pdf:'📄', doc:'📝', docx:'📝', xls:'📊', xlsx:'📊', ppt:'📋', pptx:'📋',
-      jpg:'🖼️', jpeg:'🖼️', png:'🖼️', gif:'🖼️', webp:'🖼️', svg:'🎨',
-      mp4:'🎬', mov:'🎬', avi:'🎬', mkv:'🎬', mp3:'🎵', wav:'🎵', flac:'🎵',
-      zip:'📦', rar:'📦', tar:'📦', gz:'📦',
-      js:'⚙️', ts:'⚙️', py:'🐍', html:'🌐', css:'🎨', json:'📋',
-      txt:'📃', md:'📃', csv:'📊',
-    };
-    return map[ext] || '📎';
-  }
+function renderLogHistory(logs){
+  const el=document.getElementById('log-history-list');
+  if(!logs.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📖</div><div>Записей пока нет</div></div>`;return;}
+  el.innerHTML=logs.map(l=>`
+    <div class="log-entry">
+      <span class="log-date">${l.log_date}</span>
+      <span class="log-user">${esc(l.username||'')}</span>
+      <span class="log-pages">+${l.pages} стр.</span>
+      <span class="log-note">${esc(l.note||'')}</span>
+      <button class="btn btn-danger" style="padding:3px 8px;font-size:10px" onclick="deleteLog(${l.id})">✕</button>
+    </div>`).join('');
+}
 
-  function toast(msg, type='success') {
-    const el = document.createElement('div');
-    el.className = `toast ${type}`;
-    el.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span> ${esc(msg)}`;
-    document.getElementById('toast-container').appendChild(el);
-    setTimeout(() => {
-      el.style.animation = 'toastOut 0.3s ease both';
-      setTimeout(() => el.remove(), 300);
-    }, 3000);
-  }
+async function addReadingLog(){
+  const user_id=document.getElementById('log-user-select').value;
+  const pages=parseInt(document.getElementById('log-pages').value);
+  const log_date=document.getElementById('log-date').value;
+  const note=document.getElementById('log-note').value;
+  if(!user_id||!pages||!log_date){toast('Заполните все обязательные поля','error');return;}
+  try{
+    const r=await fetch(`${API}/api/admin/reading`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({user_id:parseInt(user_id),pages,log_date,note})});
+    const d=await r.json();
+    if(!r.ok){toast(d.error,'error');return;}
+    toast('Запись добавлена!','success');
+    document.getElementById('log-pages').value='';
+    document.getElementById('log-note').value='';
+    loadAdminLogs(); loadStats(); loadLeaderboard();
+  }catch{toast('Ошибка добавления записи','error');}
+}
 
-  // Enter key support
-  document.getElementById('login-password').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
-  document.getElementById('login-username').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
-  document.getElementById('reg-confirm').addEventListener('keydown', e => e.key === 'Enter' && doRegister());
+async function deleteLog(id){
+  if(!confirm('Удалить эту запись?'))return;
+  try{
+    const r=await fetch(`${API}/api/admin/reading/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    if(r.ok){toast('Запись удалена','success');loadAdminLogs();loadStats();loadLeaderboard();}
+    else{const d=await r.json();toast(d.error,'error');}
+  }catch{toast('Ошибка','error');}
+}
+
+async function deleteUser(id){
+  if(!confirm('Удалить этого пользователя и все его данные?'))return;
+  try{
+    const r=await fetch(`${API}/api/admin/users/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    if(r.ok){toast('Пользователь удалён','success');loadAdminUsers();loadAdminLogs();loadStats();loadLeaderboard();}
+    else{const d=await r.json();toast(d.error,'error');}
+  }catch{toast('Ошибка','error');}
+}
+
+// Set today's date in log form
+document.addEventListener('DOMContentLoaded',()=>{
+  const today=new Date().toISOString().split('T')[0];
+  const dateEl=document.getElementById('log-date');
+  if(dateEl) dateEl.value=today;
+});
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function showErr(el,msg){el.textContent=msg;el.classList.add('show');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function formatBytes(b){if(b<1024)return`${b} Б`;if(b<1048576)return`${(b/1024).toFixed(1)} КБ`;if(b<1073741824)return`${(b/1048576).toFixed(1)} МБ`;return`${(b/1073741824).toFixed(2)} ГБ`;}
+function formatDate(d){return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});}
+function getFileEmoji(name){const ext=name.split('.').pop().toLowerCase();const m={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📋',pptx:'📋',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',webp:'🖼️',mp4:'🎬',mov:'🎬',mp3:'🎵',wav:'🎵',zip:'📦',rar:'📦',txt:'📃',md:'📃',csv:'📊',js:'⚙️',py:'🐍',html:'🌐'};return m[ext]||'📎';}
+function toast(msg,type='success'){
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${type==='success'?'✓':'✕'}</span> ${esc(msg)}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(()=>{el.style.animation='toastOut .3s ease both';setTimeout(()=>el.remove(),300);},3000);
+}
+
+// Enter key
+document.getElementById('login-password').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
+document.getElementById('login-username').addEventListener('keydown',e=>e.key==='Enter'&&doLogin());
+document.getElementById('reg-confirm').addEventListener('keydown',e=>e.key==='Enter'&&doRegister());
+
+// Close modal on overlay click
+document.getElementById('profile-modal').addEventListener('click',function(e){if(e.target===this)closeProfileModal();});
 </script>
 </body>
 </html>
